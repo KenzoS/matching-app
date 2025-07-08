@@ -3,14 +3,6 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <header className="bg-white shadow-md">
-        <nav className="container mx-auto px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-800">
-            FindYourStylist
-          </h1>
-        </nav>
-      </header>
-
       <main className="flex-grow container mx-auto px-6 py-12">
         <div className="text-center">
           <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
