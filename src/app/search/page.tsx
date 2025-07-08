@@ -94,7 +94,7 @@ const SearchPage = () => {
         {filteredStylists.map((stylist) => (
           <Link key={stylist.id} href={`/stylist/${stylist.id}`} legacyBehavior>
             <a className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
-              {/* <Image src={stylist.imageUrl} alt={stylist.name} width={400} height={300} className="w-full h-48 object-cover" /> */}
+              <Image src={stylist.imageUrl} alt={stylist.name} width={400} height={300} className="w-full h-48 object-cover" />
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-800">{stylist.name}</h3>
                 <p className="text-sm text-gray-500 mb-2">{stylist.salon} / {stylist.area}</p>

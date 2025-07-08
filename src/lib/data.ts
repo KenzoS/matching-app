@@ -7,11 +7,10 @@ export interface Stylist {
   price: number;
   imageUrl: string;
   bio: string;
-  email?: string; // 登録用に追加
-  password?: string; // 登録用に追加
+  email?: string;
+  password?: string;
 }
 
-// let に変更し、外部から追加できるようにする
 export let stylists: Stylist[] = [
   {
     id: 1,
@@ -20,7 +19,7 @@ export let stylists: Stylist[] = [
     area: '東京',
     style: 'ショート',
     price: 9500,
-    imageUrl: '/path/to/stylist1.jpg', // あとで実際の画像パスに置き換えます
+    imageUrl: '/images/stylist1.jpg', // パスを修正
     bio: 'ショートカットとボブが得意です。お客様一人ひとりの骨格に合わせたカットを提案します。',
   },
   {
@@ -30,7 +29,7 @@ export let stylists: Stylist[] = [
     area: '大阪',
     style: 'メンズ',
     price: 8000,
-    imageUrl: '/path/to/stylist2.jpg',
+    imageUrl: '/images/stylist2.jpg', // パスを修正
     bio: 'メンズカットのスペシャリスト。ビジネスからカジュアルまで、再現性の高いスタイルを。',
   },
   {
@@ -40,7 +39,7 @@ export let stylists: Stylist[] = [
     area: '福岡',
     style: 'ロング',
     price: 12000,
-    imageUrl: '/path/to/stylist3.jpg',
+    imageUrl: '/images/stylist3.jpg', // パスを修正
     bio: 'ロングヘアの透明感カラーが得意です。髪質改善トリートメントも人気です。',
   },
   {
@@ -50,7 +49,7 @@ export let stylists: Stylist[] = [
     area: '札幌',
     style: 'ミディアム',
     price: 8500,
-    imageUrl: '/path/to/stylist4.jpg',
+    imageUrl: '/images/stylist4.jpg', // パスを修正
     bio: 'ナチュラルなミディアムスタイルで、女性らしさを引き出します。',
   },
   {
@@ -60,18 +59,17 @@ export let stylists: Stylist[] = [
     area: '名古屋',
     style: 'ロング',
     price: 11000,
-    imageUrl: '/path/to/stylist5.jpg',
+    imageUrl: '/images/stylist5.jpg', // パスを修正
     bio: 'フェミニンなロングスタイルと、ダメージレスな施術を心がけています。',
   },
 ];
 
-// 新しい美容師を追加する関数
 export const addStylist = (newStylist: Omit<Stylist, 'id' | 'imageUrl'>) => {
   const newId = stylists.length > 0 ? Math.max(...stylists.map(s => s.id)) + 1 : 1;
   const stylistWithId: Stylist = {
     ...newStylist,
     id: newId,
-    imageUrl: '/path/to/default-stylist.jpg', // 仮の画像パス
+    imageUrl: '/images/default-stylist.jpg', // 仮の画像パスを修正
   };
   stylists.push(stylistWithId);
   console.log('New stylist added (non-persistent):', stylistWithId);

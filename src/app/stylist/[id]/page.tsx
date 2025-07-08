@@ -19,17 +19,13 @@ const StylistDetailPage: React.FC<StylistDetailPageProps> = ({ params }) => {
     <div className="container mx-auto px-6 py-12">
       <div className="bg-white rounded-lg shadow-lg p-8">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-          {/* プロフィール画像 (仮) */}
-          {/* <Image 
+          <Image 
             src={stylist.imageUrl} 
             alt={stylist.name} 
             width={200} 
             height={200} 
             className="rounded-full object-cover w-48 h-48"
-          /> */}
-          <div className="w-48 h-48 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 text-6xl font-bold">
-            {stylist.name.charAt(0)}
-          </div>
+          />
 
           <div className="text-center md:text-left">
             <h1 className="text-4xl font-bold text-gray-800">{stylist.name}</h1>
