@@ -9,6 +9,8 @@ export interface Stylist {
   bio: string;
   email?: string;
   password?: string;
+  taste: string;
+  specialties: string[]; // 新しく追加
 }
 
 export let stylists: Stylist[] = [
@@ -19,8 +21,10 @@ export let stylists: Stylist[] = [
     area: '東京',
     style: 'ショート',
     price: 9500,
-    imageUrl: '/images/stylist1.jpg', // パスを修正
+    imageUrl: '/images/stylist1.jpg',
     bio: 'ショートカットとボブが得意です。お客様一人ひとりの骨格に合わせたカットを提案します。',
+    taste: 'ナチュラル',
+    specialties: ['似合わせカット', '髪質改善'], // 専門技術を追加
   },
   {
     id: 2,
@@ -29,8 +33,10 @@ export let stylists: Stylist[] = [
     area: '大阪',
     style: 'メンズ',
     price: 8000,
-    imageUrl: '/images/stylist2.jpg', // パスを修正
+    imageUrl: '/images/stylist2.jpg',
     bio: 'メンズカットのスペシャリスト。ビジネスからカジュアルまで、再現性の高いスタイルを。',
+    taste: 'カジュアル',
+    specialties: ['メンズカット', 'パーマ'], // 専門技術を追加
   },
   {
     id: 3,
@@ -39,8 +45,10 @@ export let stylists: Stylist[] = [
     area: '福岡',
     style: 'ロング',
     price: 12000,
-    imageUrl: '/images/stylist3.jpg', // パスを修正
+    imageUrl: '/images/stylist3.jpg',
     bio: 'ロングヘアの透明感カラーが得意です。髪質改善トリートメントも人気です。',
+    taste: 'フェミニン',
+    specialties: ['髪質改善', '透明感カラー', 'ブリーチ毛対応'], // 専門技術を追加
   },
   {
     id: 4,
@@ -49,8 +57,10 @@ export let stylists: Stylist[] = [
     area: '札幌',
     style: 'ミディアム',
     price: 8500,
-    imageUrl: '/images/stylist4.jpg', // パスを修正
+    imageUrl: '/images/stylist4.jpg',
     bio: 'ナチュラルなミディアムスタイルで、女性らしさを引き出します。',
+    taste: 'ナチュラル',
+    specialties: ['似合わせカット', 'ダメージケア'], // 専門技術を追加
   },
   {
     id: 5,
@@ -59,8 +69,10 @@ export let stylists: Stylist[] = [
     area: '名古屋',
     style: 'ロング',
     price: 11000,
-    imageUrl: '/images/stylist5.jpg', // パスを修正
+    imageUrl: '/images/stylist5.jpg',
     bio: 'フェミニンなロングスタイルと、ダメージレスな施術を心がけています。',
+    taste: 'フェミニン',
+    specialties: ['髪質改善', '縮毛矯正'], // 専門技術を追加
   },
 ];
 
@@ -69,7 +81,7 @@ export const addStylist = (newStylist: Omit<Stylist, 'id' | 'imageUrl'>) => {
   const stylistWithId: Stylist = {
     ...newStylist,
     id: newId,
-    imageUrl: '/images/default-stylist.jpg', // 仮の画像パスを修正
+    imageUrl: '/images/default-stylist.jpg',
   };
   stylists.push(stylistWithId);
   console.log('New stylist added (non-persistent):', stylistWithId);

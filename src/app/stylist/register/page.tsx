@@ -1,32 +1,44 @@
-"use client"; // この行を追加
+"use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // リダイレクトのためにインポート
-import { addStylist } from '@/lib/data'; // addStylist関数をインポート
+import { useRouter } from 'next/navigation';
+import { addStylist } from '@/lib/data';
 
 const RegisterPage = () => {
   const router = useRouter();
 
-  // フォームの各フィールドの状態を管理
   const [name, setName] = useState('');
   const [salon, setSalon] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [bio, setBio] = useState('');
-  const [style, setStyle] = useState('指定なし'); // 得意なスタイル
-  const [area, setArea] = useState('指定なし'); // エリア
-  const [price, setPrice] = useState(''); // 料金目安
+  const [style, setStyle] = useState('指定なし');
+  const [area, setArea] = useState('指定なし');
+  const [price, setPrice] = useState('');
+  const [taste, setTaste] = useState('指定なし');
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]); // 新しく追加
+
+  const allSpecialties = [ // 専門技術の選択肢
+    '似合わせカット', '髪質改善', 'メンズカット', 'パーマ', '透明感カラー',
+    'ブリーチ毛対応', 'ダメージケア', '縮毛矯正', '白髪染め', '頭皮ケア'
+  ];
+
+  const handleSpecialtyChange = (specialty: string) => {
+    setSelectedSpecialties(prev => 
+      prev.includes(specialty)
+        ? prev.filter(s => s !== specialty)
+        : [...prev, specialty]
+    );
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // ページの再読み込みを防ぐ
+    e.preventDefault();
 
-    // 必須フィールドの簡単なバリデーション
-    if (!name || !salon || !email || !password || !bio || style === '指定なし' || area === '指定なし' || !price) {
+    if (!name || !salon || !email || !password || !bio || style === '指定なし' || area === '指定なし' || !price || taste === '指定なし' || selectedSpecialties.length === 0) {
       alert('全ての必須項目を入力してください。');
       return;
     }
 
-    // 新しい美容師オブジェクトを作成
     const newStylist = {
       name,
       salon,
@@ -35,14 +47,15 @@ const RegisterPage = () => {
       bio,
       style,
       area,
-      price: parseInt(price, 10), // 数値に変換
+      price: parseInt(price, 10),
+      taste,
+      specialties: selectedSpecialties, // 専門技術を追加
     };
 
-    // addStylist関数を呼び出してモックデータに追加
     addStylist(newStylist);
 
     alert('美容師の登録が完了しました！');
-    router.push('/search'); // 登録後、検索ページにリダイレクト
+    router.push('/search');
   };
 
   return (
@@ -167,7 +180,7 @@ const RegisterPage = () => {
             <div>
               <label htmlFor="price" className="block text-sm font-medium text-gray-700">料金目安 (半角数字)</label>
               <input 
-                type="number" // 数値入力に限定
+                type="number" 
                 id="price" 
                 name="price" 
                 value={price} 
@@ -177,25 +190,47 @@ const RegisterPage = () => {
               />
             </div>
 
-            {/* プロフィール写真のアップロードは一旦削除 */}
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700">プロフィール写真</label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                <div className="space-y-1 text-center">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <div className="flex text-sm text-gray-600">
-                    <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-pink-600 hover:text-pink-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-pink-500">
-                      <span>アップロード</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+            {/* 得意なテイスト */}
+            <div>
+              <label htmlFor="taste" className="block text-sm font-medium text-gray-700">得意なテイスト</label>
+              <select 
+                id="taste" 
+                name="taste" 
+                value={taste} 
+                onChange={(e) => setTaste(e.target.value)} 
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md"
+                required
+              >
+                <option value="指定なし">選択してください</option>
+                <option value="ナチュラル">ナチュラル</option>
+                <option value="フェミニン">フェミニン</option>
+                <option value="クール">クール</option>
+                <option value="カジュアル">カジュアル</option>
+                <option value="モード">モード</option>
+              </select>
+            </div>
+
+            {/* 専門技術・悩み解決のチェックボックスを追加 */}
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">専門技術・悩み解決</label>
+              <div className="flex flex-wrap gap-2">
+                {allSpecialties.map(specialty => (
+                  <div key={specialty} className="flex items-center">
+                    <input
+                      id={`reg-specialty-${specialty}`}
+                      type="checkbox"
+                      value={specialty}
+                      checked={selectedSpecialties.includes(specialty)}
+                      onChange={() => handleSpecialtyChange(specialty)}
+                      className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor={`reg-specialty-${specialty}`} className="ml-2 text-sm text-gray-900">
+                      {specialty}
                     </label>
-                    <p className="pl-1">またはドラッグ＆ドロップ</p>
                   </div>
-                  <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                </div>
+                ))}
               </div>
-            </div> */}
+            </div>
 
             <div className="text-center">
               <button type="submit" className="bg-gray-800 text-white font-bold rounded-full px-8 py-3 hover:bg-gray-900 transition-colors">

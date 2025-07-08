@@ -32,6 +32,18 @@ const StylistDetailPage: React.FC<StylistDetailPageProps> = ({ params }) => {
             <p className="text-xl text-gray-600 mt-2">{stylist.salon} ({stylist.area})</p>
             <p className="text-lg text-pink-500 mt-2">得意なスタイル: {stylist.style}</p>
             <p className="text-lg text-gray-700 mt-2">料金目安: ¥{stylist.price.toLocaleString()}〜</p>
+            <p className="text-lg text-gray-700 mt-2">得意なテイスト: {stylist.taste}</p>
+            {/* 専門技術を表示 */}
+            <div className="mt-4">
+              <h3 className="text-md font-semibold text-gray-800 mb-2">専門技術・悩み解決:</h3>
+              <div className="flex flex-wrap gap-2">
+                {stylist.specialties.map((s, index) => (
+                  <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

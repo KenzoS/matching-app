@@ -1,26 +1,45 @@
-"use client"; // この行を追加
-
 "use client";
 
 import React, { useState } from 'react';
 import { stylists } from '@/lib/data';
 import Image from 'next/image';
-import Link from 'next/link'; // Linkコンポーネントをインポート
+import Link from 'next/link';
 
 const SearchPage = () => {
   const [area, setArea] = useState('指定なし');
   const [style, setStyle] = useState('指定なし');
   const [price, setPrice] = useState('指定なし');
+  const [taste, setTaste] = useState('指定なし');
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]); // 新しく追加
+
+  const allSpecialties = [
+    '似合わせカット', '髪質改善', 'メンズカット', 'パーマ', '透明感カラー',
+    'ブリーチ毛対応', 'ダメージケア', '縮毛矯正', '白髪染め', '頭皮ケア'
+  ];
+
+  const handleSpecialtyChange = (specialty: string) => {
+    setSelectedSpecialties(prev => 
+      prev.includes(specialty)
+        ? prev.filter(s => s !== specialty)
+        : [...prev, specialty]
+    );
+  };
 
   const filteredStylists = stylists.filter(stylist => {
     const priceRange = price.split('〜').map(p => parseInt(p.replace(/[¥,]/g, '')) || 0);
     const minPrice = priceRange[0] || 0;
     const maxPrice = priceRange[1] || Infinity;
 
+    // 専門技術のフィルタリングロジック
+    const matchesSpecialties = selectedSpecialties.length === 0 || 
+                               selectedSpecialties.every(s => stylist.specialties.includes(s));
+
     return (
       (area === '指定なし' || stylist.area === area) &&
       (style === '指定なし' || stylist.style === style) &&
-      (price === '指定なし' || (stylist.price >= minPrice && stylist.price <= maxPrice))
+      (price === '指定なし' || (stylist.price >= minPrice && stylist.price <= maxPrice)) &&
+      (taste === '指定なし' || stylist.taste === taste) &&
+      matchesSpecialties // 専門技術の条件を追加
     );
   });
 
@@ -32,7 +51,7 @@ const SearchPage = () => {
 
       {/* Search Filters */}
       <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div>
             <label htmlFor="area" className="block text-sm font-medium text-gray-700">エリア</label>
             <select 
@@ -81,8 +100,48 @@ const SearchPage = () => {
               <option>¥12001〜</option>
             </select>
           </div>
+          <div>
+            <label htmlFor="taste" className="block text-sm font-medium text-gray-700">テイスト</label>
+            <select 
+              id="taste" 
+              name="taste" 
+              value={taste}
+              onChange={(e) => setTaste(e.target.value)}
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md"
+            >
+              <option>指定なし</option>
+              <option>ナチュラル</option>
+              <option>フェミニン</option>
+              <option>クール</option>
+              <option>カジュアル</option>
+              <option>モード</option>
+            </select>
+          </div>
         </div>
-        <div className="text-center">
+
+        {/* 専門技術のフィルターを追加 */}
+        <div className="mt-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">専門技術・悩み解決</label>
+          <div className="flex flex-wrap gap-2">
+            {allSpecialties.map(specialty => (
+              <div key={specialty} className="flex items-center">
+                <input
+                  id={`specialty-${specialty}`}
+                  type="checkbox"
+                  value={specialty}
+                  checked={selectedSpecialties.includes(specialty)}
+                  onChange={() => handleSpecialtyChange(specialty)}
+                  className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                />
+                <label htmlFor={`specialty-${specialty}`} className="ml-2 text-sm text-gray-900">
+                  {specialty}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="text-center mt-8">
           <button className="bg-pink-500 text-white font-bold rounded-full px-8 py-3 hover:bg-pink-600 transition-colors">
             この条件で検索
           </button>
