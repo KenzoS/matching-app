@@ -157,10 +157,27 @@ const SearchPage = () => {
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-800">{stylist.name}</h3>
                 <p className="text-sm text-gray-500 mb-2">{stylist.salon} / {stylist.area}</p>
-                <p className="text-gray-700 mb-4">{stylist.bio}</p>
-                <div className="flex justify-between items-center">
+                <p className="text-gray-700 mb-4 line-clamp-2">{stylist.bio}</p> {/* 自己紹介を2行に制限 */}
+                <div className="flex justify-between items-center mb-2">
                   <span className="text-lg font-semibold text-pink-500">¥{stylist.price.toLocaleString()}</span>
                   <span className="bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{stylist.style}</span>
+                </div>
+                <div className="flex flex-wrap gap-1 mb-2">
+                  <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                    テイスト: {stylist.taste}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {stylist.specialties.slice(0, 2).map((s, idx) => ( // 専門技術を2つまで表示
+                    <span key={idx} className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                      {s}
+                    </span>
+                  ))}
+                  {stylist.specialties.length > 2 && (
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                      他{stylist.specialties.length - 2}件
+                    </span>
+                  )}
                 </div>
               </div>
             </a>
