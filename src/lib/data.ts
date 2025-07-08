@@ -1,4 +1,18 @@
-export const stylists = [
+export interface Stylist {
+  id: number;
+  name: string;
+  salon: string;
+  area: string;
+  style: string;
+  price: number;
+  imageUrl: string;
+  bio: string;
+  email?: string; // 登録用に追加
+  password?: string; // 登録用に追加
+}
+
+// let に変更し、外部から追加できるようにする
+export let stylists: Stylist[] = [
   {
     id: 1,
     name: '佐藤 由美',
@@ -50,3 +64,15 @@ export const stylists = [
     bio: 'フェミニンなロングスタイルと、ダメージレスな施術を心がけています。',
   },
 ];
+
+// 新しい美容師を追加する関数
+export const addStylist = (newStylist: Omit<Stylist, 'id' | 'imageUrl'>) => {
+  const newId = stylists.length > 0 ? Math.max(...stylists.map(s => s.id)) + 1 : 1;
+  const stylistWithId: Stylist = {
+    ...newStylist,
+    id: newId,
+    imageUrl: '/path/to/default-stylist.jpg', // 仮の画像パス
+  };
+  stylists.push(stylistWithId);
+  console.log('New stylist added (non-persistent):', stylistWithId);
+};
