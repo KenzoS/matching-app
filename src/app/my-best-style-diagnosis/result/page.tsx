@@ -157,7 +157,7 @@ const ResultPage = () => {
       {otherSuggestions.length > 0 && (
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">その他の提案</h2>
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-8 grid-cols-2 lg:grid-cols-3">
             {otherSuggestions.map((style) => (
               <div key={style.id} className="bg-white rounded-lg shadow-lg overflow-hidden p-6">
                 <div className="relative aspect-square rounded-lg overflow-hidden shadow-md mb-4">
