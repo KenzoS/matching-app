@@ -26,10 +26,25 @@ export default function RootLayout({
                 FindYourStylist
               </a>
             </Link>
-            <AuthButtons /> {/* AuthButtonsコンポーネントを配置 */}
+            <AuthButtons />
           </nav>
         </header>
-        {children}
+        <main className="flex-grow"> {/* mainタグを追加し、flex-growでコンテンツ領域を確保 */}
+          {children}
+        </main>
+        <footer className="bg-gray-800 text-white py-6 mt-auto"> {/* mt-autoでフッターを最下部に固定 */}
+          <div className="container mx-auto px-6 text-center text-sm">
+            <p>&copy; {new Date().getFullYear()} FindYourStylist. All rights reserved.</p>
+            <div className="mt-2 space-x-4">
+              <Link href="/privacy-policy" legacyBehavior>
+                <a className="hover:underline">プライバシーポリシー</a>
+              </Link>
+              <Link href="/terms-of-service" legacyBehavior>
+                <a className="hover:underline">利用規約</a>
+              </Link>
+            </div>
+          </div>
+        </footer>
       </body>
     </html>
   );
