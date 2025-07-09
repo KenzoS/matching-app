@@ -17,6 +17,8 @@ export interface Stylist {
   address: string;
   latitude: number;
   longitude: number;
+  thirdPartyEvaluationScore?: number; // 第三者評価スコア
+  thirdPartyEvaluationComments?: string[]; // 第三者評価コメント
 }
 
 export interface SuggestedHairstyle {
@@ -51,6 +53,8 @@ export let stylists: Stylist[] = [
     address: '東京都渋谷区神宮前6-35-3',
     latitude: 35.6678,
     longitude: 139.7045,
+    thirdPartyEvaluationScore: 4.5,
+    thirdPartyEvaluationComments: ["カットの再現性が高い", "トレンドを取り入れた提案力がある"],
   },
   {
     id: 2,
@@ -69,6 +73,8 @@ export let stylists: Stylist[] = [
     address: '大阪府大阪市北区梅田1-1-3',
     latitude: 34.7018,
     longitude: 135.4950,
+    thirdPartyEvaluationScore: 4.0,
+    thirdPartyEvaluationComments: ["メンズスタイルのバリエーションが豊富", "パーマ技術に定評がある"],
   },
   {
     id: 3,
@@ -87,6 +93,8 @@ export let stylists: Stylist[] = [
     address: '福岡県福岡市中央区天神2-11-1',
     latitude: 33.5913,
     longitude: 130.3988,
+    thirdPartyEvaluationScore: 4.8,
+    thirdPartyEvaluationComments: ["カラーの知識が豊富で、透明感のある仕上がりが素晴らしい", "髪質改善の経験が豊富"],
   },
   {
     id: 4,
@@ -105,6 +113,8 @@ export let stylists: Stylist[] = [
     address: '北海道札幌市中央区南1条西3丁目',
     latitude: 43.0597,
     longitude: 141.3539,
+    thirdPartyEvaluationScore: 4.2,
+    thirdPartyEvaluationComments: ["ナチュラルなスタイルが得意で、顧客の魅力を引き出す", "丁寧なカウンセリング"],
   },
   {
     id: 5,
@@ -123,6 +133,8 @@ export let stylists: Stylist[] = [
     address: '愛知県名古屋市中区栄3-5-1',
     latitude: 35.1680,
     longitude: 136.9065,
+    thirdPartyEvaluationScore: 4.6,
+    thirdPartyEvaluationComments: ["フェミニンなスタイルに定評あり", "ダメージレス施術へのこだわりが感じられる"],
   },
 ];
 

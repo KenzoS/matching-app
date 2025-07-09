@@ -119,6 +119,12 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
         matchReasons.push('提案されたヘアスタイルが制作可能です');
     }
 
+    // 第三者評価スコアをマッチングロジックに組み込む (重要度: 高)
+    if (stylist.thirdPartyEvaluationScore) {
+      matchScore += stylist.thirdPartyEvaluationScore * 5; // 例: スコア1点につき5点加算
+      matchReasons.push(`第三者評価で高評価（${stylist.thirdPartyEvaluationScore}点）`);
+    }
+
     return { ...stylist, matchScore, matchReasons, distance }; // 距離も返す
   })
   .filter(stylist => stylist.matchScore > 0) // スコアが0以上の美容師のみを対象
@@ -319,6 +325,11 @@ const ResultPage = () => {
                 <div className="md:w-1/3 bg-pink-50 p-6 flex flex-col items-center justify-center border-l border-gray-200">
                   <h4 className="text-lg font-semibold text-gray-700 mb-2">あなたとのマッチ度</h4>
                   <ScoreCircle score={stylist.matchScore} />
+                  {stylist.thirdPartyEvaluationScore && (
+                    <p className="text-sm text-gray-600 mt-2">
+                      第三者評価: <span className="font-bold text-pink-600">{stylist.thirdPartyEvaluationScore}</span> / 5.0
+                    </p>
+                  )}
                   <div className="mt-4 text-left w-full">
                     <h5 className="text-sm font-bold text-gray-600 mb-2">マッチの理由:</h5>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">

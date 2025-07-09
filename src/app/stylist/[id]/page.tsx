@@ -97,6 +97,29 @@ const StylistDetailPage: React.FC<StylistDetailPageProps> = ({ params }) => {
           <p className="text-center text-gray-500 mt-4">※これはダミーの施術例です。</p>
         </div>
 
+        {/* 第三者評価セクション */}
+        {stylist.thirdPartyEvaluationScore && ( // スコアが存在する場合のみ表示
+          <div className="mt-8 pt-8 border-t border-gray-200">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">第三者評価</h2>
+            <div className="bg-pink-50 p-6 rounded-lg text-gray-700 border border-pink-200">
+              <p className="text-lg font-semibold mb-2">
+                総合評価: <span className="text-pink-600 text-2xl">{stylist.thirdPartyEvaluationScore}</span> / 5.0
+              </p>
+              {stylist.thirdPartyEvaluationComments && stylist.thirdPartyEvaluationComments.length > 0 && (
+                <>
+                  <h3 className="text-md font-semibold text-gray-800 mt-4 mb-2">評価コメント:</h3>
+                  <ul className="list-disc list-inside space-y-1 text-gray-700">
+                    {stylist.thirdPartyEvaluationComments.map((comment, index) => (
+                      <li key={index}>{comment}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              <p className="text-center text-gray-500 mt-4">※この評価は同業の専門家によるものです。</p>
+            </div>
+          </div>
+        )}
+
         {/* お客様の声セクション */}
         <div className="mt-8 pt-8 border-t border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">お客様の声</h2>
