@@ -1,16 +1,14 @@
-export interface Stylist {
-  id: number;
+export interface SuggestedHairstyle {
+  id: string;
   name: string;
-  salon: string;
-  area: string;
-  style: string;
-  price: number;
   imageUrl: string;
-  bio: string;
-  email?: string;
-  password?: string;
-  taste: string;
-  specialties: string[]; // 新しく追加
+  description: string;
+  suitableFor: {
+    faceShape?: string[];
+    hairQuality?: string[];
+    fashionStyle?: string[];
+    timeCommitment?: string[];
+  };
 }
 
 export let stylists: Stylist[] = [
@@ -24,7 +22,7 @@ export let stylists: Stylist[] = [
     imageUrl: '/images/stylist1.jpg',
     bio: 'ショートカットとボブが得意です。お客様一人ひとりの骨格に合わせたカットを提案します。',
     taste: 'ナチュラル',
-    specialties: ['似合わせカット', '髪質改善'], // 専門技術を追加
+    specialties: ['似合わせカット', '髪質改善'],
   },
   {
     id: 2,
@@ -36,7 +34,7 @@ export let stylists: Stylist[] = [
     imageUrl: '/images/stylist2.jpg',
     bio: 'メンズカットのスペシャリスト。ビジネスからカジュアルまで、再現性の高いスタイルを。',
     taste: 'カジュアル',
-    specialties: ['メンズカット', 'パーマ'], // 専門技術を追加
+    specialties: ['メンズカット', 'パーマ'],
   },
   {
     id: 3,
@@ -48,7 +46,7 @@ export let stylists: Stylist[] = [
     imageUrl: '/images/stylist3.jpg',
     bio: 'ロングヘアの透明感カラーが得意です。髪質改善トリートメントも人気です。',
     taste: 'フェミニン',
-    specialties: ['髪質改善', '透明感カラー', 'ブリーチ毛対応'], // 専門技術を追加
+    specialties: ['髪質改善', '透明感カラー', 'ブリーチ毛対応'],
   },
   {
     id: 4,
@@ -60,7 +58,7 @@ export let stylists: Stylist[] = [
     imageUrl: '/images/stylist4.jpg',
     bio: 'ナチュラルなミディアムスタイルで、女性らしさを引き出します。',
     taste: 'ナチュラル',
-    specialties: ['似合わせカット', 'ダメージケア'], // 専門技術を追加
+    specialties: ['似合わせカット', 'ダメージケア'],
   },
   {
     id: 5,
@@ -72,7 +70,81 @@ export let stylists: Stylist[] = [
     imageUrl: '/images/stylist5.jpg',
     bio: 'フェミニンなロングスタイルと、ダメージレスな施術を心がけています。',
     taste: 'フェミニン',
-    specialties: ['髪質改善', '縮毛矯正'], // 専門技術を追加
+    specialties: ['髪質改善', '縮毛矯正'],
+  },
+];
+
+// 提案するヘアスタイルのモックデータ
+export const suggestedHairstyles: SuggestedHairstyle[] = [
+  {
+    id: 'natural_bob',
+    name: 'リラックスカジュアルボブ',
+    imageUrl: '/images/suggested-style-natural-bob.jpg',
+    description: '自然体で親しみやすい印象を与える、手入れが楽なボブスタイルです。',
+    suitableFor: {
+      fashionStyle: ['casual'],
+      faceShape: ['oval', 'round'],
+      hairQuality: ['straight_flat', 'fine_soft'],
+      timeCommitment: ['short_time', 'medium_time'],
+    },
+  },
+  {
+    id: 'elegant_long',
+    name: 'エレガントウェーブロング',
+    imageUrl: '/images/suggested-style-elegant-long.jpg',
+    description: '上品で洗練された印象を与える、ツヤ感のあるロングウェーブスタイルです。',
+    suitableFor: {
+      fashionStyle: ['elegant', 'feminine'],
+      faceShape: ['oval', 'long'],
+      hairQuality: ['wavy_frizz', 'thick_voluminous'],
+      timeCommitment: ['medium_time', 'long_time'],
+    },
+  },
+  {
+    id: 'mode_short',
+    name: 'エッジィモードショート',
+    imageUrl: '/images/suggested-style-mode-short.jpg',
+    description: '個性的でエッジの効いた、トレンド感のあるショートスタイルです。',
+    suitableFor: {
+      fashionStyle: ['mode'],
+      faceShape: ['oval', 'heart'],
+      hairQuality: ['straight_flat', 'thick_voluminous'],
+      timeCommitment: ['medium_time', 'long_time'],
+    },
+  },
+  {
+    id: 'feminine_medium',
+    name: 'ふんわりフェミニンミディアム',
+    imageUrl: '/images/suggested-style-feminine-medium.jpg',
+    description: '柔らかく可愛らしい印象を与える、ふんわりとしたミディアムスタイルです。',
+    suitableFor: {
+      fashionStyle: ['feminine', 'elegant'],
+      faceShape: ['oval', 'round', 'heart'],
+      hairQuality: ['fine_soft', 'wavy_frizz'],
+      timeCommitment: ['medium_time', 'long_time'],
+    },
+  },
+  {
+    id: 'layered_long',
+    name: '軽やかレイヤーロング',
+    imageUrl: '/images/suggested-style-layered-long.jpg', // 新しい画像
+    description: '動きと軽さを出した、どんな顔型にも合わせやすい万能なロングスタイルです。',
+    suitableFor: {
+      faceShape: ['oval', 'round', 'long', 'square', 'heart'],
+      hairQuality: ['thick_voluminous', 'wavy_frizz'],
+      timeCommitment: ['medium_time'],
+    },
+  },
+  {
+    id: 'mens_perm',
+    name: 'メンズパーマスタイル',
+    imageUrl: '/images/suggested-style-mens-perm.jpg', // 新しい画像
+    description: '無造作な動きと立体感で、こなれた印象を与えるメンズパーマスタイルです。',
+    suitableFor: {
+      fashionStyle: ['casual', 'mode'],
+      hairQuality: ['straight_flat', 'fine_soft'],
+      timeCommitment: ['short_time', 'medium_time'],
+    },
   },
 ];
 

@@ -4,106 +4,93 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { stylists } from '@/lib/data';
+import { stylists, suggestedHairstyles, SuggestedHairstyle } from '@/lib/data'; // suggestedHairstylesをインポート
 
 // 診断ロジックの定義
-// 実際のAIロジックはもっと複雑になりますが、ここでは簡易的なマッピングを行います。
 const getDiagnosisResult = (answers: { [key: number]: string }) => {
-  let suggestedStyle = {
-    name: 'あなたにぴったりのスタイル',
-    imageUrl: '/images/suggested-style-natural-bob.jpg', // デフォルト
-    description: 'あなたの個性と魅力を引き出す、特別なヘアスタイルです。'
+  const userProfile = {
+    fashionStyle: answers[1],
+    hairConcern: answers[2],
+    timeCommitment: answers[3],
+    faceShape: answers[4],
+    hairQuality: answers[5],
   };
-  let recommendedStylistIds: number[] = [];
-  let explanation = []; // 説明文を格納する配列
 
-  // 質問1: ファッションスタイル
-  switch (answers[1]) {
-    case 'casual':
-      suggestedStyle.name = 'リラックスカジュアルボブ';
-      suggestedStyle.imageUrl = '/images/suggested-style-natural-bob.jpg';
-      explanation.push('あなたのカジュアルなファッションスタイルに合わせ、リラックス感のあるボブがおすすめです。');
-      recommendedStylistIds = stylists.filter(s => s.taste === 'ナチュラル').map(s => s.id);
-      break;
-    case 'elegant':
-      suggestedStyle.name = 'エレガントウェーブロング';
-      suggestedStyle.imageUrl = '/images/suggested-style-elegant-long.jpg';
-      explanation.push('エレガントなファッションスタイルには、ツヤと動きのあるロングウェーブがあなたの魅力を引き立てます。');
-      recommendedStylistIds = stylists.filter(s => s.taste === 'フェミニン').map(s => s.id);
-      break;
-    case 'mode':
-      suggestedStyle.name = 'エッジィモードショート';
-      suggestedStyle.imageUrl = '/images/suggested-style-mode-short.jpg';
-      explanation.push('個性派のあなたには、シャープなラインと動きのあるモードなショートがぴったりです。');
-      recommendedStylistIds = stylists.filter(s => s.taste === 'クール').map(s => s.id);
-      break;
-    case 'feminine':
-      suggestedStyle.name = 'ふんわりフェミニンミディアム';
-      suggestedStyle.imageUrl = '/images/suggested-style-feminine-medium.jpg';
-      explanation.push('フェミニンなファッションスタイルには、柔らかい質感のミディアムスタイルがあなたの可愛らしさを際立たせます。');
-      recommendedStylistIds = stylists.filter(s => s.taste === 'フェミニン').map(s => s.id);
-      break;
-  }
+  const matchedHairstyles: SuggestedHairstyle[] = [];
+  const recommendedStylistIds: number[] = [];
 
-  // 質問4: 顔の形による補正と説明
-  switch (answers[4]) {
-    case 'oval':
-      explanation.push('卵型のお顔立ちなので、どんなスタイルも似合いやすいですが、特にバランスの取れたスタイルがおすすめです。');
-      break;
-    case 'round':
-      explanation.push('丸顔さんには、縦のラインを強調したり、顔周りに動きを出すことで、すっきりとした印象になります。');
-      break;
-    case 'long':
-      explanation.push('面長さんには、横のボリュームを出したり、前髪でバランスを取ることで、顔の長さをカバーし、小顔効果が期待できます。');
-      break;
-    case 'square':
-      explanation.push('ベース型・エラ張りさんには、顔周りの髪でエラをカバーしたり、トップにボリュームを出すことで、柔らかい印象になります。');
-      break;
-    case 'heart':
-      explanation.push('逆三角形・ハート型さんには、顎周りにボリュームを持たせることで、全体のバランスが整います。');
-      break;
-  }
+  // 各提案スタイルがユーザーのプロファイルにどれだけ適合するかをスコアリング
+  suggestedHairstyles.forEach(style => {
+    let score = 0;
+    let explanationParts: string[] = [];
 
-  // 質問5: 髪質による補正と説明
-  switch (answers[5]) {
-    case 'straight_flat':
-      explanation.push('直毛でペタッとしやすい髪質なので、パーマやレイヤーで動きを出すと、よりスタイルが活きてきます。');
-      recommendedStylistIds = recommendedStylistIds.concat(stylists.filter(s => s.specialties.includes('パーマ')).map(s => s.id));
-      break;
-    case 'wavy_frizz':
-      explanation.push('くせ毛で広がりやすい髪質なので、髪質改善や縮毛矯正、あるいはくせを活かしたスタイルが得意な美容師がおすすめです。');
-      recommendedStylistIds = recommendedStylistIds.concat(stylists.filter(s => s.specialties.includes('髪質改善') || s.specialties.includes('縮毛矯正')).map(s => s.id));
-      break;
-    case 'thick_voluminous':
-      explanation.push('硬くて量が多い髪質なので、毛量調整や質感調整が得意な美容師を選ぶと、扱いやすくなります。');
-      break;
-    case 'fine_soft':
-      explanation.push('細くて柔らかい髪質なので、ボリュームアップやふんわり感を出すカット、パーマが得意な美容師がおすすめです。');
-      recommendedStylistIds = recommendedStylistIds.concat(stylists.filter(s => s.specialties.includes('パーマ')).map(s => s.id));
-      break;
-  }
+    // ファッションスタイル
+    if (style.suitableFor.fashionStyle?.includes(userProfile.fashionStyle)) {
+      score += 2;
+      explanationParts.push(`あなたの${userProfile.fashionStyle === 'casual' ? 'カジュアル' : userProfile.fashionStyle === 'elegant' ? 'エレガント' : userProfile.fashionStyle === 'mode' ? 'モード' : 'フェミニン'}なファッションスタイルにマッチします。`);
+    }
 
-  // 質問3: ヘアケアにかける時間による補正と説明
-  switch (answers[3]) {
-    case 'short_time':
-      explanation.push('ヘアケアに時間をかけたくないあなたには、乾かすだけでまとまる、再現性の高いスタイルが最適です。');
-      break;
-    case 'medium_time':
-      explanation.push('少しなら時間をかけられるあなたには、簡単なスタイリングで決まるスタイルがおすすめです。');
-      break;
-    case 'long_time':
-      explanation.push('時間をかけてもOKなあなたには、トレンドを取り入れた、より凝ったスタイルも挑戦できます。');
-      break;
-  }
+    // 顔の形
+    if (style.suitableFor.faceShape?.includes(userProfile.faceShape)) {
+      score += 3; // 顔の形は重要度高め
+      switch (userProfile.faceShape) {
+        case 'oval': explanationParts.push('卵型のお顔立ちなので、どんなスタイルも似合いやすいですが、特にバランスの取れたスタイルがおすすめです。'); break;
+        case 'round': explanationParts.push('丸顔さんには、縦のラインを強調したり、顔周りに動きを出すことで、すっきりとした印象になります。'); break;
+        case 'long': explanationParts.push('面長さんには、横のボリュームを出したり、前髪でバランスを取ることで、顔の長さをカバーし、小顔効果が期待できます。'); break;
+        case 'square': explanationParts.push('ベース型・エラ張りさんには、顔周りの髪でエラをカバーしたり、トップにボリュームを出すことで、柔らかい印象になります。'); break;
+        case 'heart': explanationParts.push('逆三角形・ハート型さんには、顎周りにボリュームを持たせることで、全体のバランスが整います。'); break;
+      }
+    }
+
+    // 髪質
+    if (style.suitableFor.hairQuality?.includes(userProfile.hairQuality)) {
+      score += 2;
+      switch (userProfile.hairQuality) {
+        case 'straight_flat': explanationParts.push('直毛でペタッとしやすい髪質でも、動きを出しやすいスタイルです。'); break;
+        case 'wavy_frizz': explanationParts.push('くせ毛で広がりやすい髪質を活かしたり、扱いやすくするのに適しています。'); break;
+        case 'thick_voluminous': explanationParts.push('硬くて量が多い髪質でも、軽さやまとまりを出しやすいスタイルです。'); break;
+        case 'fine_soft': explanationParts.push('細くて柔らかい髪質でも、ボリュームアップやふんわり感を出しやすいスタイルです。'); break;
+      }
+    }
+
+    // ヘアケア時間
+    if (style.suitableFor.timeCommitment?.includes(userProfile.timeCommitment)) {
+      score += 1;
+      explanationParts.push(`あなたの${userProfile.timeCommitment === 'short_time' ? 'ヘアケアに時間をかけたくない' : userProfile.timeCommitment === 'medium_time' ? '少しなら時間をかけられる' : '時間をかけてもOKな'}ライフスタイルにフィットします。`);
+    }
+
+    // スコアが一定以上であれば候補に追加
+    if (score > 0) { // 最低1つは適合
+      matchedHairstyles.push({ ...style, score: score, description: explanationParts.join(' ') || style.description }); // スコアを追加
+    }
+  });
+
+  // スコアの高い順にソートし、上位3つを提案
+  matchedHairstyles.sort((a, b) => (b as any).score - (a as any).score); // スコアでソート
+
+  const top3Hairstyles = matchedHairstyles.slice(0, 3);
+
+  // 提案されたスタイルに合う美容師を抽出
+  top3Hairstyles.forEach(style => {
+    // スタイル名やテイスト、専門技術から美容師を推薦
+    const stylistsForStyle = stylists.filter(s => 
+      s.style.includes(style.name.includes('ショート') ? 'ショート' : style.name.includes('ミディアム') ? 'ミディアム' : style.name.includes('ロング') ? 'ロング' : 'メンズ') ||
+      s.taste === style.suitableFor.fashionStyle?.[0] || // 簡易的にファッションスタイルとテイストを紐付け
+      style.suitableFor.hairQuality?.some(hq => {
+        if (hq === 'wavy_frizz' && (s.specialties.includes('髪質改善') || s.specialties.includes('縮毛矯正'))) return true;
+        if (hq === 'straight_flat' && s.specialties.includes('パーマ')) return true;
+        if (hq === 'fine_soft' && s.specialties.includes('パーマ')) return true;
+        return false;
+      })
+    ).map(s => s.id);
+    recommendedStylistIds.push(...stylistsForStyle);
+  });
 
   // 重複を排除してユニークな美容師IDリストを作成
   const uniqueRecommendedStylistIds = [...new Set(recommendedStylistIds)];
   const recommendedStylists = stylists.filter(s => uniqueRecommendedStylistIds.includes(s.id));
 
-  // 最終的な説明文を結合
-  suggestedStyle.description = explanation.join(' ');
-
-  return { suggestedStyle, recommendedStylists };
+  return { suggestedHairstyles: top3Hairstyles, recommendedStylists };
 };
 
 const ResultPage = () => {
@@ -132,7 +119,9 @@ const ResultPage = () => {
     );
   }
 
-  const { suggestedStyle, recommendedStylists } = diagnosisResult;
+  const { suggestedHairstyles, recommendedStylists } = diagnosisResult;
+  const topRecommendation = suggestedHairstyles[0];
+  const otherSuggestions = suggestedHairstyles.slice(1);
 
   return (
     <div className="container mx-auto px-6 py-12">
@@ -140,22 +129,52 @@ const ResultPage = () => {
         <span className="block text-pink-600">あなた史上最高のヘアスタイルはこれ！</span>
       </h1>
 
-      {/* 提案されたヘアスタイル */}
-      <div className="bg-white rounded-lg shadow-lg p-8 mb-12 flex flex-col md:flex-row items-center gap-8">
-        <div className="w-full md:w-1/2 relative aspect-square rounded-lg overflow-hidden shadow-md">
-          <Image 
-            src={suggestedStyle.imageUrl} 
-            alt={suggestedStyle.name} 
-            layout="fill" 
-            objectFit="cover" 
-          />
+      {/* 最もおすすめのヘアスタイル */}
+      {topRecommendation ? (
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-12 flex flex-col md:flex-row items-center gap-8 border-4 border-pink-400 relative">
+          <span className="absolute top-0 left-0 bg-pink-500 text-white text-sm font-bold px-3 py-1 rounded-br-lg">あなたへのおすすめ！</span>
+          <div className="w-full md:w-1/2 relative aspect-square rounded-lg overflow-hidden shadow-md">
+            <Image 
+              src={topRecommendation.imageUrl} 
+              alt={topRecommendation.name} 
+              layout="fill" 
+              objectFit="cover" 
+            />
+          </div>
+          <div className="w-full md:w-1/2 text-center md:text-left">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">{topRecommendation.name}</h2>
+            <p className="text-lg text-gray-700 leading-relaxed">{topRecommendation.description}</p>
+            <p className="text-sm text-gray-500 mt-4">※これは診断結果に基づく提案イメージです。</p>
+          </div>
         </div>
-        <div className="w-full md:w-1/2 text-center md:text-left">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">{suggestedStyle.name}</h2>
-          <p className="text-lg text-gray-700 leading-relaxed">{suggestedStyle.description}</p> {/* 説明文を表示 */}
-          <p className="text-sm text-gray-500 mt-4">※これは診断結果に基づく提案イメージです。</p>
+      ) : (
+        <div className="bg-white rounded-lg shadow-lg p-8 text-center text-gray-500 mb-12">
+          <p>申し訳ありません、あなたに合うヘアスタイルは見つかりませんでした。</p>
         </div>
-      </div>
+      )}
+
+      {/* その他の提案 */}
+      {otherSuggestions.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">その他の提案</h2>
+          <div className="grid gap-8 md:grid-cols-2">
+            {otherSuggestions.map((style) => (
+              <div key={style.id} className="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <div className="relative aspect-square rounded-lg overflow-hidden shadow-md mb-4">
+                  <Image 
+                    src={style.imageUrl} 
+                    alt={style.name} 
+                    layout="fill" 
+                    objectFit="cover" 
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">{style.name}</h3>
+                <p className="text-md text-gray-700 leading-relaxed line-clamp-3">{style.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
         このスタイルを実現できるおすすめ美容師
