@@ -157,6 +157,27 @@ const ScoreCircle = ({ score }: { score: number }) => {
   );
 };
 
+const LineCtaSection = () => {
+  const lineUrl = "https://lin.ee/37l48Nl";
+  return (
+    <div className="bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg shadow-lg p-8 my-12 text-center">
+      <h2 className="text-3xl font-extrabold mb-3">診断結果をLINEに保存しませんか？</h2>
+      <p className="text-lg mb-6 max-w-2xl mx-auto">
+        「友だち追加」するだけで、今回の診断結果があなたのLINEに送信されます。
+        いつでも簡単に見返せるだけでなく、あなたにオススメの美容師の限定情報などもお届けします！
+      </p>
+      <a 
+        href={lineUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-block bg-white text-green-500 font-bold rounded-full px-10 py-4 text-xl hover:bg-gray-100 transition-colors shadow-lg transform hover:scale-105"
+      >
+        ＞＞ LINEで診断結果を受け取る ＜＜
+      </a>
+    </div>
+  )
+}
+
 
 const ResultPage = () => {
   const searchParams = useSearchParams();
@@ -305,6 +326,9 @@ const ResultPage = () => {
           <Link href="/search" className="text-pink-500 hover:underline mt-4 block">全ての美容師を見る</Link>
         </div>
       )}
+
+      {/* LINE CTA Section */}
+      <LineCtaSection />
 
       <div className="text-center mt-12">
         <Link href="/my-best-style-diagnosis" legacyBehavior>
