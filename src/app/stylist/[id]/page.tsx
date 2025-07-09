@@ -55,6 +55,25 @@ const StylistDetailPage: React.FC<StylistDetailPageProps> = ({ params }) => {
           <p className="text-gray-700 leading-relaxed">{stylist.bio}</p>
         </div>
 
+        {/* サロンギャラリーセクションを追加 */}
+        {stylist.salonImages && stylist.salonImages.length > 0 && (
+          <div className="mt-8 pt-8 border-t border-gray-200">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">サロンギャラリー</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {stylist.salonImages.map((image, index) => (
+                <div key={index} className="relative w-full aspect-video rounded-lg overflow-hidden shadow-sm">
+                  <Image
+                    src={image}
+                    alt={`${stylist.salon} 内装 ${index + 1}`}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ギャラリー (施術例) セクション */}
         <div className="mt-8 pt-8 border-t border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">ギャラリー (施術例)</h2>

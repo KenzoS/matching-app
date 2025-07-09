@@ -1,3 +1,19 @@
+export interface Stylist {
+  id: number;
+  name: string;
+  salon: string;
+  area: string;
+  style: string;
+  price: number;
+  imageUrl: string;
+  bio: string;
+  email?: string;
+  password?: string;
+  taste: string;
+  specialties: string[];
+  salonImages: string[];
+}
+
 export interface SuggestedHairstyle {
   id: string;
   name: string;
@@ -23,6 +39,7 @@ export let stylists: Stylist[] = [
     bio: 'ショートカットとボブが得意です。お客様一人ひとりの骨格に合わせたカットを提案します。',
     taste: 'ナチュラル',
     specialties: ['似合わせカット', '髪質改善'],
+    salonImages: ['/images/salon1-1.jpg', '/images/salon1-2.jpg'],
   },
   {
     id: 2,
@@ -35,6 +52,7 @@ export let stylists: Stylist[] = [
     bio: 'メンズカットのスペシャリスト。ビジネスからカジュアルまで、再現性の高いスタイルを。',
     taste: 'カジュアル',
     specialties: ['メンズカット', 'パーマ'],
+    salonImages: ['/images/salon2-1.jpg', '/images/salon2-2.jpg'],
   },
   {
     id: 3,
@@ -47,6 +65,7 @@ export let stylists: Stylist[] = [
     bio: 'ロングヘアの透明感カラーが得意です。髪質改善トリートメントも人気です。',
     taste: 'フェミニン',
     specialties: ['髪質改善', '透明感カラー', 'ブリーチ毛対応'],
+    salonImages: ['/images/salon3-1.jpg', '/images/salon3-2.jpg'],
   },
   {
     id: 4,
@@ -59,6 +78,7 @@ export let stylists: Stylist[] = [
     bio: 'ナチュラルなミディアムスタイルで、女性らしさを引き出します。',
     taste: 'ナチュラル',
     specialties: ['似合わせカット', 'ダメージケア'],
+    salonImages: ['/images/salon4-1.jpg', '/images/salon4-2.jpg'],
   },
   {
     id: 5,
@@ -71,10 +91,10 @@ export let stylists: Stylist[] = [
     bio: 'フェミニンなロングスタイルと、ダメージレスな施術を心がけています。',
     taste: 'フェミニン',
     specialties: ['髪質改善', '縮毛矯正'],
+    salonImages: ['/images/salon5-1.jpg', '/images/salon5-2.jpg'],
   },
 ];
 
-// 提案するヘアスタイルのモックデータ
 export const suggestedHairstyles: SuggestedHairstyle[] = [
   {
     id: 'natural_bob',
@@ -127,7 +147,7 @@ export const suggestedHairstyles: SuggestedHairstyle[] = [
   {
     id: 'layered_long',
     name: '軽やかレイヤーロング',
-    imageUrl: '/images/suggested-style-layered-long.jpg', // 新しい画像
+    imageUrl: '/images/suggested-style-layered-long.jpg',
     description: '動きと軽さを出した、どんな顔型にも合わせやすい万能なロングスタイルです。',
     suitableFor: {
       faceShape: ['oval', 'round', 'long', 'square', 'heart'],
@@ -138,7 +158,7 @@ export const suggestedHairstyles: SuggestedHairstyle[] = [
   {
     id: 'mens_perm',
     name: 'メンズパーマスタイル',
-    imageUrl: '/images/suggested-style-mens-perm.jpg', // 新しい画像
+    imageUrl: '/images/suggested-style-mens-perm.jpg',
     description: '無造作な動きと立体感で、こなれた印象を与えるメンズパーマスタイルです。',
     suitableFor: {
       fashionStyle: ['casual', 'mode'],
@@ -148,12 +168,13 @@ export const suggestedHairstyles: SuggestedHairstyle[] = [
   },
 ];
 
-export const addStylist = (newStylist: Omit<Stylist, 'id' | 'imageUrl'>) => {
+export const addStylist = (newStylist: Omit<Stylist, 'id' | 'imageUrl' | 'salonImages'>) => {
   const newId = stylists.length > 0 ? Math.max(...stylists.map(s => s.id)) + 1 : 1;
   const stylistWithId: Stylist = {
     ...newStylist,
     id: newId,
     imageUrl: '/images/default-stylist.jpg',
+    salonImages: [],
   };
   stylists.push(stylistWithId);
   console.log('New stylist added (non-persistent):', stylistWithId);
