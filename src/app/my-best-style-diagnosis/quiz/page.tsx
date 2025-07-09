@@ -55,7 +55,7 @@ const questions = [
       { text: '細くて柔らかい', value: 'fine_soft' },
     ],
   },
-  { // 新しい質問6: 美容室の雰囲気
+  { // 美容室の雰囲気
     id: 6,
     question: '美容室の雰囲気で重視することは？',
     options: [
@@ -65,7 +65,7 @@ const questions = [
       { text: 'カジュアルでアットホーム', value: 'casual_atmosphere' },
     ],
   },
-  { // 新しい質問7: 美容師とのコミュニケーション
+  { // 美容師とのコミュニケーション
     id: 7,
     question: '美容師とのコミュニケーションで重視することは？',
     options: [
@@ -73,6 +73,18 @@ const questions = [
       { text: '細かく相談したい（丁寧なカウンセリング）', value: 'detailed_consultation' },
       { text: '楽しく会話したい', value: 'enjoy_chat' },
       { text: '静かに過ごしたい', value: 'quiet_service' },
+    ],
+  },
+  { // 希望エリア
+    id: 8,
+    question: '希望するエリアは？',
+    options: [
+      { text: '東京', value: '東京' },
+      { text: '大阪', value: '大阪' },
+      { text: '福岡', value: '福岡' },
+      { text: '札幌', value: '札幌' },
+      { text: '名古屋', value: '名古屋' },
+      { text: 'その他', value: 'その他' },
     ],
   },
 ];

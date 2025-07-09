@@ -14,6 +14,9 @@ export interface Stylist {
   salonImages: string[];
   salonAtmosphere: 'calm_atmosphere' | 'lively_atmosphere' | 'private_atmosphere' | 'casual_atmosphere';
   communicationStyle: 'pro_suggestion' | 'detailed_consultation' | 'enjoy_chat' | 'quiet_service';
+  address: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface SuggestedHairstyle {
@@ -45,6 +48,9 @@ export let stylists: Stylist[] = [
     salonImages: ['/images/salon1-1.jpg', '/images/salon1-2.jpg'],
     salonAtmosphere: 'calm_atmosphere',
     communicationStyle: 'detailed_consultation',
+    address: '東京都渋谷区神宮前6-35-3',
+    latitude: 35.6678,
+    longitude: 139.7045,
   },
   {
     id: 2,
@@ -60,6 +66,9 @@ export let stylists: Stylist[] = [
     salonImages: ['/images/salon2-1.jpg', '/images/salon2-2.jpg'],
     salonAtmosphere: 'lively_atmosphere',
     communicationStyle: 'enjoy_chat',
+    address: '大阪府大阪市北区梅田1-1-3',
+    latitude: 34.7018,
+    longitude: 135.4950,
   },
   {
     id: 3,
@@ -75,6 +84,9 @@ export let stylists: Stylist[] = [
     salonImages: ['/images/salon3-1.jpg', '/images/salon3-2.jpg'],
     salonAtmosphere: 'private_atmosphere',
     communicationStyle: 'pro_suggestion',
+    address: '福岡県福岡市中央区天神2-11-1',
+    latitude: 33.5913,
+    longitude: 130.3988,
   },
   {
     id: 4,
@@ -90,6 +102,9 @@ export let stylists: Stylist[] = [
     salonImages: ['/images/salon4-1.jpg', '/images/salon4-2.jpg'],
     salonAtmosphere: 'calm_atmosphere',
     communicationStyle: 'quiet_service',
+    address: '北海道札幌市中央区南1条西3丁目',
+    latitude: 43.0597,
+    longitude: 141.3539,
   },
   {
     id: 5,
@@ -105,6 +120,9 @@ export let stylists: Stylist[] = [
     salonImages: ['/images/salon5-1.jpg', '/images/salon5-2.jpg'],
     salonAtmosphere: 'private_atmosphere',
     communicationStyle: 'detailed_consultation',
+    address: '愛知県名古屋市中区栄3-5-1',
+    latitude: 35.1680,
+    longitude: 136.9065,
   },
 ];
 

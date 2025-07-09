@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { stylists, suggestedHairstyles, SuggestedHairstyle, Stylist } from '@/lib/data';
+import { calculateDistance } from '@/lib/utils';
 
 // 診断ロジックの定義
 const getDiagnosisResult = (answers: { [key: number]: string }) => {
@@ -61,9 +62,20 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
   const top3Hairstyles = matchedHairstyles.slice(0, 3);
 
   // 2. 美容師のマッチ度スコアリングと理由生成ロジック
+  // ユーザーの現在地（仮）- 東京駅
+  const userLocation = { latitude: 35.681236, longitude: 139.767125 };
+
   const recommendedStylists = stylists.map(stylist => {
     let matchScore = 0;
     const matchReasons: string[] = [];
+
+    // 距離を計算してstylistオブジェクトに追加
+    const distance = calculateDistance(
+      userLocation.latitude,
+      userLocation.longitude,
+      stylist.latitude,
+      stylist.longitude
+    );
 
     // テイストの一致 (重要度: 高)
     if (stylist.taste === userProfile.fashionStyle) {
@@ -107,7 +119,7 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
         matchReasons.push('提案されたヘアスタイルが制作可能です');
     }
 
-    return { ...stylist, matchScore, matchReasons };
+    return { ...stylist, matchScore, matchReasons, distance }; // 距離も返す
   })
   .filter(stylist => stylist.matchScore > 0) // スコアが0以上の美容師のみを対象
   .sort((a, b) => b.matchScore - a.matchScore); // スコアの高い順にソート
@@ -281,7 +293,12 @@ const ResultPage = () => {
                 {/* Middle: Details */}
                 <div className="md:w-1/2 p-6 flex flex-col">
                   <h3 className="text-2xl font-bold text-gray-800">{stylist.name}</h3>
-                  <p className="text-md text-gray-500 mb-3">{stylist.salon} / {stylist.area}</p>
+                  <p className="text-md text-gray-500 mb-3">
+                    {stylist.salon} / {stylist.area}
+                    {stylist.distance !== null && (
+                      <span className="ml-2 font-bold text-pink-600">現在地から約{stylist.distance}km</span>
+                    )}
+                  </p>
                   <p className="text-gray-700 mb-4 flex-grow line-clamp-3">{stylist.bio}</p>
                   <div className="flex flex-wrap gap-2">
                     <span className="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">
