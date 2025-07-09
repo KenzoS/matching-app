@@ -17,6 +17,7 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
     hairQuality: answers[5],
     salonAtmosphere: answers[6],
     communicationStyle: answers[7],
+    stylistGenderPreference: answers[9], // 新しく追加した美容師の性別の好み
   };
 
   // 1. ヘアスタイル提案ロジック（既存のものを活用）
@@ -128,6 +129,12 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
     return { ...stylist, matchScore, matchReasons, distance }; // 距離も返す
   })
   .filter(stylist => stylist.matchScore > 0) // スコアが0以上の美容師のみを対象
+  .filter(stylist => { // 美容師の性別でフィルタリング
+    if (userProfile.stylistGenderPreference === 'any') {
+      return true;
+    }
+    return stylist.gender === userProfile.stylistGenderPreference;
+  })
   .sort((a, b) => b.matchScore - a.matchScore); // スコアの高い順にソート
 
   return { suggestedHairstyles: top3Hairstyles, recommendedStylists };
@@ -285,7 +292,7 @@ const ResultPage = () => {
 
       {recommendedStylists.length > 0 ? (
         <div className="space-y-8">
-          {recommendedStylists.slice(0, 5).map((stylist, index) => (
+          {recommendedStylists.slice(0, 3).map((stylist, index) => (
             <div key={stylist.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <div className="flex flex-col md:flex-row">
                 {/* Left side: Image and Basic Info */}

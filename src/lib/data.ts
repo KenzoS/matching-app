@@ -19,6 +19,7 @@ export interface Stylist {
   longitude: number;
   thirdPartyEvaluationScore?: number; // 第三者評価スコア
   thirdPartyEvaluationComments?: string[]; // 第三者評価コメント
+  gender: 'male' | 'female';
 }
 
 export interface SuggestedHairstyle {
@@ -55,6 +56,7 @@ export let stylists: Stylist[] = [
     longitude: 139.7045,
     thirdPartyEvaluationScore: 4.5,
     thirdPartyEvaluationComments: ["カットの再現性が高い", "トレンドを取り入れた提案力がある"],
+    gender: 'female',
   },
   {
     id: 2,
@@ -75,6 +77,7 @@ export let stylists: Stylist[] = [
     longitude: 135.4950,
     thirdPartyEvaluationScore: 4.0,
     thirdPartyEvaluationComments: ["メンズスタイルのバリエーションが豊富", "パーマ技術に定評がある"],
+    gender: 'male',
   },
   {
     id: 3,
@@ -95,6 +98,7 @@ export let stylists: Stylist[] = [
     longitude: 130.3988,
     thirdPartyEvaluationScore: 4.8,
     thirdPartyEvaluationComments: ["カラーの知識が豊富で、透明感のある仕上がりが素晴らしい", "髪質改善の経験が豊富"],
+    gender: 'female',
   },
   {
     id: 4,
@@ -115,6 +119,7 @@ export let stylists: Stylist[] = [
     longitude: 141.3539,
     thirdPartyEvaluationScore: 4.2,
     thirdPartyEvaluationComments: ["ナチュラルなスタイルが得意で、顧客の魅力を引き出す", "丁寧なカウンセリング"],
+    gender: 'male',
   },
   {
     id: 5,
@@ -135,6 +140,7 @@ export let stylists: Stylist[] = [
     longitude: 136.9065,
     thirdPartyEvaluationScore: 4.6,
     thirdPartyEvaluationComments: ["フェミニンなスタイルに定評あり", "ダメージレス施術へのこだわりが感じられる"],
+    gender: 'female',
   },
 ];
 

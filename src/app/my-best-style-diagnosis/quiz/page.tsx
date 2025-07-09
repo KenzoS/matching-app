@@ -87,6 +87,15 @@ const questions = [
       { text: 'その他', value: 'その他' },
     ],
   },
+  { // 希望する美容師の性別
+    id: 9,
+    question: '希望する美容師の性別は？',
+    options: [
+      { text: '男性', value: 'male' },
+      { text: '女性', value: 'female' },
+      { text: 'どちらでも良い', value: 'any' },
+    ],
+  },
 ];
 
 const QuizPage = () => {
