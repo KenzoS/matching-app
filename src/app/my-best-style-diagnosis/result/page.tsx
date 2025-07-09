@@ -10,51 +10,98 @@ import { stylists } from '@/lib/data';
 // 実際のAIロジックはもっと複雑になりますが、ここでは簡易的なマッピングを行います。
 const getDiagnosisResult = (answers: { [key: number]: string }) => {
   let suggestedStyle = {
-    name: 'ナチュラルボブ',
-    imageUrl: '/images/suggested-style-natural-bob.jpg',
-    description: '自然体で親しみやすい印象を与える、手入れが楽なボブスタイルです。',
+    name: 'あなたにぴったりのスタイル',
+    imageUrl: '/images/suggested-style-natural-bob.jpg', // デフォルト
+    description: 'あなたの個性と魅力を引き出す、特別なヘアスタイルです。'
   };
   let recommendedStylistIds: number[] = [];
+  let explanation = []; // 説明文を格納する配列
 
   // 質問1: ファッションスタイル
   switch (answers[1]) {
+    case 'casual':
+      suggestedStyle.name = 'リラックスカジュアルボブ';
+      suggestedStyle.imageUrl = '/images/suggested-style-natural-bob.jpg';
+      explanation.push('あなたのカジュアルなファッションスタイルに合わせ、リラックス感のあるボブがおすすめです。');
+      recommendedStylistIds = stylists.filter(s => s.taste === 'ナチュラル').map(s => s.id);
+      break;
     case 'elegant':
-      suggestedStyle = {
-        name: 'エレガントロング',
-        imageUrl: '/images/suggested-style-elegant-long.jpg',
-        description: '上品で洗練された印象を与える、ツヤ感のあるロングスタイルです。',
-      };
+      suggestedStyle.name = 'エレガントウェーブロング';
+      suggestedStyle.imageUrl = '/images/suggested-style-elegant-long.jpg';
+      explanation.push('エレガントなファッションスタイルには、ツヤと動きのあるロングウェーブがあなたの魅力を引き立てます。');
       recommendedStylistIds = stylists.filter(s => s.taste === 'フェミニン').map(s => s.id);
       break;
     case 'mode':
-      suggestedStyle = {
-        name: 'モードショート',
-        imageUrl: '/images/suggested-style-mode-short.jpg',
-        description: '個性的でエッジの効いた、トレンド感のあるショートスタイルです。',
-      };
+      suggestedStyle.name = 'エッジィモードショート';
+      suggestedStyle.imageUrl = '/images/suggested-style-mode-short.jpg';
+      explanation.push('個性派のあなたには、シャープなラインと動きのあるモードなショートがぴったりです。');
       recommendedStylistIds = stylists.filter(s => s.taste === 'クール').map(s => s.id);
       break;
     case 'feminine':
-      suggestedStyle = {
-        name: 'フェミニンミディアム',
-        imageUrl: '/images/suggested-style-feminine-medium.jpg',
-        description: '柔らかく可愛らしい印象を与える、ふんわりとしたミディアムスタイルです。',
-      };
+      suggestedStyle.name = 'ふんわりフェミニンミディアム';
+      suggestedStyle.imageUrl = '/images/suggested-style-feminine-medium.jpg';
+      explanation.push('フェミニンなファッションスタイルには、柔らかい質感のミディアムスタイルがあなたの可愛らしさを際立たせます。');
       recommendedStylistIds = stylists.filter(s => s.taste === 'フェミニン').map(s => s.id);
-      break;
-    default: // casual
-      recommendedStylistIds = stylists.filter(s => s.taste === 'ナチュラル').map(s => s.id);
       break;
   }
 
-  // 質問2: 髪の悩み (簡易的な考慮)
-  if (answers[2] === 'frizz') {
-    recommendedStylistIds = recommendedStylistIds.concat(stylists.filter(s => s.specialties.includes('髪質改善') || s.specialties.includes('縮毛矯正')).map(s => s.id));
+  // 質問4: 顔の形による補正と説明
+  switch (answers[4]) {
+    case 'oval':
+      explanation.push('卵型のお顔立ちなので、どんなスタイルも似合いやすいですが、特にバランスの取れたスタイルがおすすめです。');
+      break;
+    case 'round':
+      explanation.push('丸顔さんには、縦のラインを強調したり、顔周りに動きを出すことで、すっきりとした印象になります。');
+      break;
+    case 'long':
+      explanation.push('面長さんには、横のボリュームを出したり、前髪でバランスを取ることで、顔の長さをカバーし、小顔効果が期待できます。');
+      break;
+    case 'square':
+      explanation.push('ベース型・エラ張りさんには、顔周りの髪でエラをカバーしたり、トップにボリュームを出すことで、柔らかい印象になります。');
+      break;
+    case 'heart':
+      explanation.push('逆三角形・ハート型さんには、顎周りにボリュームを持たせることで、全体のバランスが整います。');
+      break;
+  }
+
+  // 質問5: 髪質による補正と説明
+  switch (answers[5]) {
+    case 'straight_flat':
+      explanation.push('直毛でペタッとしやすい髪質なので、パーマやレイヤーで動きを出すと、よりスタイルが活きてきます。');
+      recommendedStylistIds = recommendedStylistIds.concat(stylists.filter(s => s.specialties.includes('パーマ')).map(s => s.id));
+      break;
+    case 'wavy_frizz':
+      explanation.push('くせ毛で広がりやすい髪質なので、髪質改善や縮毛矯正、あるいはくせを活かしたスタイルが得意な美容師がおすすめです。');
+      recommendedStylistIds = recommendedStylistIds.concat(stylists.filter(s => s.specialties.includes('髪質改善') || s.specialties.includes('縮毛矯正')).map(s => s.id));
+      break;
+    case 'thick_voluminous':
+      explanation.push('硬くて量が多い髪質なので、毛量調整や質感調整が得意な美容師を選ぶと、扱いやすくなります。');
+      break;
+    case 'fine_soft':
+      explanation.push('細くて柔らかい髪質なので、ボリュームアップやふんわり感を出すカット、パーマが得意な美容師がおすすめです。');
+      recommendedStylistIds = recommendedStylistIds.concat(stylists.filter(s => s.specialties.includes('パーマ')).map(s => s.id));
+      break;
+  }
+
+  // 質問3: ヘアケアにかける時間による補正と説明
+  switch (answers[3]) {
+    case 'short_time':
+      explanation.push('ヘアケアに時間をかけたくないあなたには、乾かすだけでまとまる、再現性の高いスタイルが最適です。');
+      break;
+    case 'medium_time':
+      explanation.push('少しなら時間をかけられるあなたには、簡単なスタイリングで決まるスタイルがおすすめです。');
+      break;
+    case 'long_time':
+      explanation.push('時間をかけてもOKなあなたには、トレンドを取り入れた、より凝ったスタイルも挑戦できます。');
+      break;
   }
 
   // 重複を排除してユニークな美容師IDリストを作成
   const uniqueRecommendedStylistIds = [...new Set(recommendedStylistIds)];
   const recommendedStylists = stylists.filter(s => uniqueRecommendedStylistIds.includes(s.id));
+
+  // 最終的な説明文を結合
+  suggestedStyle.description = explanation.join(' ');
 
   return { suggestedStyle, recommendedStylists };
 };
@@ -105,7 +152,7 @@ const ResultPage = () => {
         </div>
         <div className="w-full md:w-1/2 text-center md:text-left">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">{suggestedStyle.name}</h2>
-          <p className="text-lg text-gray-700 leading-relaxed">{suggestedStyle.description}</p>
+          <p className="text-lg text-gray-700 leading-relaxed">{suggestedStyle.description}</p> {/* 説明文を表示 */}
           <p className="text-sm text-gray-500 mt-4">※これは診断結果に基づく提案イメージです。</p>
         </div>
       </div>
