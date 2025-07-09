@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { stylists, suggestedHairstyles, SuggestedHairstyle } from '@/lib/data'; // suggestedHairstylesをインポート
+import { stylists, suggestedHairstyles, SuggestedHairstyle, Stylist } from '@/lib/data';
 
 // 診断ロジックの定義
 const getDiagnosisResult = (answers: { [key: number]: string }) => {
@@ -14,25 +14,22 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
     timeCommitment: answers[3],
     faceShape: answers[4],
     hairQuality: answers[5],
+    salonAtmosphere: answers[6],
+    communicationStyle: answers[7],
   };
 
+  // 1. ヘアスタイル提案ロジック（既存のものを活用）
   const matchedHairstyles: SuggestedHairstyle[] = [];
-  const recommendedStylistIds: number[] = [];
-
-  // 各提案スタイルがユーザーのプロファイルにどれだけ適合するかをスコアリング
   suggestedHairstyles.forEach(style => {
     let score = 0;
     let explanationParts: string[] = [];
 
-    // ファッションスタイル
     if (style.suitableFor.fashionStyle?.includes(userProfile.fashionStyle)) {
       score += 2;
       explanationParts.push(`あなたの${userProfile.fashionStyle === 'casual' ? 'カジュアル' : userProfile.fashionStyle === 'elegant' ? 'エレガント' : userProfile.fashionStyle === 'mode' ? 'モード' : 'フェミニン'}なファッションスタイルにマッチします。`);
     }
-
-    // 顔の形
     if (style.suitableFor.faceShape?.includes(userProfile.faceShape)) {
-      score += 3; // 顔の形は重要度高め
+      score += 3;
       switch (userProfile.faceShape) {
         case 'oval': explanationParts.push('卵型のお顔立ちなので、どんなスタイルも似合いやすいですが、特にバランスの取れたスタイルがおすすめです。'); break;
         case 'round': explanationParts.push('丸顔さんには、縦のラインを強調したり、顔周りに動きを出すことで、すっきりとした印象になります。'); break;
@@ -41,8 +38,6 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
         case 'heart': explanationParts.push('逆三角形・ハート型さんには、顎周りにボリュームを持たせることで、全体のバランスが整います。'); break;
       }
     }
-
-    // 髪質
     if (style.suitableFor.hairQuality?.includes(userProfile.hairQuality)) {
       score += 2;
       switch (userProfile.hairQuality) {
@@ -52,46 +47,116 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
         case 'fine_soft': explanationParts.push('細くて柔らかい髪質でも、ボリュームアップやふんわり感を出しやすいスタイルです。'); break;
       }
     }
-
-    // ヘアケア時間
     if (style.suitableFor.timeCommitment?.includes(userProfile.timeCommitment)) {
       score += 1;
       explanationParts.push(`あなたの${userProfile.timeCommitment === 'short_time' ? 'ヘアケアに時間をかけたくない' : userProfile.timeCommitment === 'medium_time' ? '少しなら時間をかけられる' : '時間をかけてもOKな'}ライフスタイルにフィットします。`);
     }
 
-    // スコアが一定以上であれば候補に追加
-    if (score > 0) { // 最低1つは適合
-      matchedHairstyles.push({ ...style, score: score, description: explanationParts.join(' ') || style.description }); // スコアを追加
+    if (score > 0) {
+      matchedHairstyles.push({ ...style, score: score, description: explanationParts.join(' ') || style.description });
     }
   });
 
-  // スコアの高い順にソートし、上位3つを提案
-  matchedHairstyles.sort((a, b) => (b as any).score - (a as any).score); // スコアでソート
-
+  matchedHairstyles.sort((a, b) => (b as any).score - (a as any).score);
   const top3Hairstyles = matchedHairstyles.slice(0, 3);
 
-  // 提案されたスタイルに合う美容師を抽出
-  top3Hairstyles.forEach(style => {
-    // スタイル名やテイスト、専門技術から美容師を推薦
-    const stylistsForStyle = stylists.filter(s => 
-      s.style.includes(style.name.includes('ショート') ? 'ショート' : style.name.includes('ミディアム') ? 'ミディアム' : style.name.includes('ロング') ? 'ロング' : 'メンズ') ||
-      s.taste === style.suitableFor.fashionStyle?.[0] || // 簡易的にファッションスタイルとテイストを紐付け
-      style.suitableFor.hairQuality?.some(hq => {
-        if (hq === 'wavy_frizz' && (s.specialties.includes('髪質改善') || s.specialties.includes('縮毛矯正'))) return true;
-        if (hq === 'straight_flat' && s.specialties.includes('パーマ')) return true;
-        if (hq === 'fine_soft' && s.specialties.includes('パーマ')) return true;
-        return false;
-      })
-    ).map(s => s.id);
-    recommendedStylistIds.push(...stylistsForStyle);
-  });
+  // 2. 美容師のマッチ度スコアリングと理由生成ロジック
+  const recommendedStylists = stylists.map(stylist => {
+    let matchScore = 0;
+    const matchReasons: string[] = [];
 
-  // 重複を排除してユニークな美容師IDリストを作成
-  const uniqueRecommendedStylistIds = [...new Set(recommendedStylistIds)];
-  const recommendedStylists = stylists.filter(s => uniqueRecommendedStylistIds.includes(s.id));
+    // テイストの一致 (重要度: 高)
+    if (stylist.taste === userProfile.fashionStyle) {
+      matchScore += 30;
+      matchReasons.push(`あなたのファッション（${stylist.taste}）と得意なテイストが一致`);
+    }
+
+    // 髪の悩みに対応できるか (重要度: 高)
+    if (userProfile.hairConcern === 'damage' && stylist.specialties.includes('トリートメント')) {
+      matchScore += 25;
+      matchReasons.push('ダメージケアが得意です');
+    }
+    if (userProfile.hairConcern === 'frizz' && (stylist.specialties.includes('髪質改善') || stylist.specialties.includes('縮毛矯正'))) {
+      matchScore += 25;
+      matchReasons.push('うねりや広がりを抑えるのが得意です');
+    }
+    if (userProfile.hairConcern === 'flat' && stylist.specialties.includes('パーマ')) {
+      matchScore += 25;
+      matchReasons.push('ボリュームアップさせるパーマが得意です');
+    }
+
+    // サロンの雰囲気 (重要度: 中)
+    if (stylist.salonAtmosphere === userProfile.salonAtmosphere) {
+      matchScore += 20;
+      matchReasons.push('ご希望のサロンの雰囲気と合っています');
+    }
+
+    // コミュニケーションスタイル (重要度: 中)
+    if (stylist.communicationStyle === userProfile.communicationStyle) {
+      matchScore += 15;
+      matchReasons.push('ご希望のコミュニケーションスタイルと一致');
+    }
+    
+    // 提案されたヘアスタイルが作れるか (重要度: 低)
+    const canCreateStyle = top3Hairstyles.some(style => {
+        const styleCategory = style.name.includes('ショート') ? 'ショート' : style.name.includes('ミディアム') ? 'ミディアム' : style.name.includes('ロング') ? 'ロング' : 'メンズ';
+        return stylist.style.includes(styleCategory);
+    });
+    if (canCreateStyle) {
+        matchScore += 10;
+        matchReasons.push('提案されたヘアスタイルが制作可能です');
+    }
+
+    return { ...stylist, matchScore, matchReasons };
+  })
+  .filter(stylist => stylist.matchScore > 0) // スコアが0以上の美容師のみを対象
+  .sort((a, b) => b.matchScore - a.matchScore); // スコアの高い順にソート
 
   return { suggestedHairstyles: top3Hairstyles, recommendedStylists };
 };
+
+// スコアを円グラフで表示するコンポーネント
+const ScoreCircle = ({ score }: { score: number }) => {
+  const percentage = Math.min(100, Math.max(0, score));
+  const circumference = 2 * Math.PI * 45; // 45 is the radius
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative w-24 h-24">
+      <svg className="w-full h-full" viewBox="0 0 100 100">
+        {/* Background circle */}
+        <circle
+          className="text-gray-200"
+          strokeWidth="10"
+          stroke="currentColor"
+          fill="transparent"
+          r="45"
+          cx="50"
+          cy="50"
+        />
+        {/* Progress circle */}
+        <circle
+          className="text-pink-500"
+          strokeWidth="10"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          stroke="currentColor"
+          fill="transparent"
+          r="45"
+          cx="50"
+          cy="50"
+          transform="rotate(-90 50 50)"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-xl font-bold text-pink-600">{percentage}</span>
+        <span className="text-xs font-bold text-pink-600">%</span>
+      </div>
+    </div>
+  );
+};
+
 
 const ResultPage = () => {
   const searchParams = useSearchParams();
@@ -102,6 +167,7 @@ const ResultPage = () => {
     if (answersParam) {
       try {
         const answers = JSON.parse(answersParam);
+        // data.tsから最新のstylistsデータを渡す
         setDiagnosisResult(getDiagnosisResult(answers));
       } catch (error) {
         console.error('Failed to parse answers', error);
@@ -129,7 +195,6 @@ const ResultPage = () => {
         <span className="block text-pink-600">あなた史上最高のヘアスタイルはこれ！</span>
       </h1>
 
-      {/* 最もおすすめのヘアスタイル */}
       {topRecommendation ? (
         <div className="bg-white rounded-lg shadow-lg p-8 mb-12 flex flex-col md:flex-row items-center gap-8 border-4 border-pink-400 relative">
           <span className="absolute top-0 left-0 bg-pink-500 text-white text-sm font-bold px-3 py-1 rounded-br-lg">あなたへのおすすめ！</span>
@@ -153,7 +218,6 @@ const ResultPage = () => {
         </div>
       )}
 
-      {/* その他の提案 */}
       {otherSuggestions.length > 0 && (
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">その他の提案</h2>
@@ -177,44 +241,62 @@ const ResultPage = () => {
       )}
 
       <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
-        このスタイルを実現できるおすすめ美容師
+        あなたとの相性抜群！おすすめ美容師
       </h2>
 
-      {/* おすすめ美容師リスト */}
       {recommendedStylists.length > 0 ? (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {recommendedStylists.map((stylist) => (
-            <Link key={stylist.id} href={`/stylist/${stylist.id}`} legacyBehavior>
-              <a className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
-                <Image src={stylist.imageUrl} alt={stylist.name} width={400} height={300} className="w-full h-48 object-cover" />
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800">{stylist.name}</h3>
-                  <p className="text-sm text-gray-500 mb-2">{stylist.salon} / {stylist.area}</p>
-                  <p className="text-gray-700 mb-4 line-clamp-2">{stylist.bio}</p>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-lg font-semibold text-pink-500">¥{stylist.price.toLocaleString()}</span>
-                    <span className="bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{stylist.style}</span>
+        <div className="space-y-8">
+          {recommendedStylists.slice(0, 5).map((stylist, index) => (
+            <div key={stylist.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="flex flex-col md:flex-row">
+                {/* Left side: Image and Basic Info */}
+                <div className="md:w-1/3 relative">
+                  <Image src={stylist.imageUrl} alt={stylist.name} width={400} height={400} className="w-full h-full object-cover" />
+                   <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-2xl font-bold px-3 py-1 rounded">
+                    {index + 1}位
                   </div>
-                  <div className="flex flex-wrap gap-1 mb-2">
-                    <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                </div>
+                
+                {/* Middle: Details */}
+                <div className="md:w-1/2 p-6 flex flex-col">
+                  <h3 className="text-2xl font-bold text-gray-800">{stylist.name}</h3>
+                  <p className="text-md text-gray-500 mb-3">{stylist.salon} / {stylist.area}</p>
+                  <p className="text-gray-700 mb-4 flex-grow line-clamp-3">{stylist.bio}</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">
                       テイスト: {stylist.taste}
                     </span>
+                     <span className="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">{stylist.style}</span>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {stylist.specialties.slice(0, 2).map((s, idx) => (
+                   <div className="flex flex-wrap gap-1 mt-2">
+                    {stylist.specialties.map((s, idx) => (
                       <span key={idx} className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full">
                         {s}
                       </span>
                     ))}
-                    {stylist.specialties.length > 2 && (
-                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full">
-                        他{stylist.specialties.length - 2}件
-                      </span>
-                    )}
                   </div>
                 </div>
-              </a>
-            </Link>
+
+                {/* Right side: Match Score and Reasons */}
+                <div className="md:w-1/3 bg-pink-50 p-6 flex flex-col items-center justify-center border-l border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-700 mb-2">あなたとのマッチ度</h4>
+                  <ScoreCircle score={stylist.matchScore} />
+                  <div className="mt-4 text-left w-full">
+                    <h5 className="text-sm font-bold text-gray-600 mb-2">マッチの理由:</h5>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+                      {stylist.matchReasons.slice(0, 3).map((reason, i) => (
+                        <li key={i}>{reason}</li>
+                      ))}
+                    </ul>
+                  </div>
+                   <Link href={`/stylist/${stylist.id}`} legacyBehavior>
+                    <a className="mt-4 bg-pink-500 text-white font-bold rounded-full px-6 py-2 text-center hover:bg-pink-600 transition-colors shadow-md w-full">
+                      詳細を見る
+                    </a>
+                  </Link>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       ) : (
