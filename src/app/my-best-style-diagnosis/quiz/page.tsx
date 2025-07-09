@@ -34,7 +34,7 @@ const questions = [
       { text: '時間をかけてもOK', value: 'long_time' },
     ],
   },
-  { // 新しい質問1: 顔の形
+  { // 顔の形
     id: 4,
     question: 'あなたの顔の形に最も近いのは？',
     options: [
@@ -45,7 +45,7 @@ const questions = [
       { text: '逆三角形・ハート型', value: 'heart' },
     ],
   },
-  { // 新しい質問2: 髪質
+  { // 髪質
     id: 5,
     question: 'あなたの髪質に最も近いのは？',
     options: [
@@ -53,6 +53,26 @@ const questions = [
       { text: 'くせ毛で広がりやすい', value: 'wavy_frizz' },
       { text: '硬くて量が多い', value: 'thick_voluminous' },
       { text: '細くて柔らかい', value: 'fine_soft' },
+    ],
+  },
+  { // 新しい質問6: 美容室の雰囲気
+    id: 6,
+    question: '美容室の雰囲気で重視することは？',
+    options: [
+      { text: '静かで落ち着いた空間', value: 'calm_atmosphere' },
+      { text: '活気があって賑やか', value: 'lively_atmosphere' },
+      { text: 'プライベート感重視（個室など）', value: 'private_atmosphere' },
+      { text: 'カジュアルでアットホーム', value: 'casual_atmosphere' },
+    ],
+  },
+  { // 新しい質問7: 美容師とのコミュニケーション
+    id: 7,
+    question: '美容師とのコミュニケーションで重視することは？',
+    options: [
+      { text: 'お任せしたい（提案重視）', value: 'pro_suggestion' },
+      { text: '細かく相談したい（丁寧なカウンセリング）', value: 'detailed_consultation' },
+      { text: '楽しく会話したい', value: 'enjoy_chat' },
+      { text: '静かに過ごしたい', value: 'quiet_service' },
     ],
   },
 ];
@@ -70,8 +90,6 @@ const QuizPage = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
-      // 全ての質問に答えたら結果ページへ遷移
-      // ここで回答を元に診断ロジックを走らせ、結果を渡す
       router.push(`/my-best-style-diagnosis/result?answers=${JSON.stringify(answers)}`);
     }
   };
@@ -107,7 +125,7 @@ const QuizPage = () => {
         <div className="mt-8 text-center">
           <button
             onClick={handleNext}
-            disabled={!answers[currentQuestion.id]} // 回答が選択されていない場合はボタンを無効化
+            disabled={!answers[currentQuestion.id]}
             className="bg-pink-500 text-white font-bold rounded-full px-10 py-4 text-xl hover:bg-pink-600 transition-colors shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {currentQuestionIndex < questions.length - 1 ? '次へ' : '診断結果を見る'}

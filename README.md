@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FindYourStylist - あなた史上最高のヘアスタイルを見つけるAIマッチングアプリ
 
-## Getting Started
+## プロジェクト概要
 
-First, run the development server:
+「FindYourStylist」は、AIと専門家（美容師）の知見を組み合わせることで、ユーザー一人ひとりに「自分史上最高のヘアスタイル」を提案し、それを実現できる最適な美容師とマッチングするアプリです。従来のクーポンや検索に頼らず、ユーザーの好み、髪質、顔の形、ライフスタイルといった多角的な要素から、最適な美容師との出会いを創出します。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 主要機能 (MVP)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+現在実装されている主な機能は以下の通りです。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+*   **トップページ:** アプリのコンセプト紹介と、顧客・美容師への導線。
+*   **ヘアスタイル診断:**
+    *   ユーザーのパーソナルな情報（ファッションスタイル、髪の悩み、ヘアケア時間、顔の形、髪質）に基づいたクイズ形式の診断。
+    *   診断結果として、ユーザーに最適な複数のヘアスタイル候補を提案し、最もおすすめのスタイルを強調表示。
+    *   提案されたスタイルが「なぜ似合うのか」という具体的な説明文を生成。
+*   **美容師検索・絞り込み:**
+    *   登録美容師の一覧表示。
+    *   エリア、スタイル、価格帯、テイスト、専門技術によるリアルタイム絞り込み機能。
+*   **美容師詳細ページ:**
+    *   美容師のプロフィール、自己紹介、専門技術、テイスト、サロン内装画像、施術例（ダミー画像）、お客様の声（ダミー）を表示。
+*   **美容師登録:**
+    *   新しい美容師の情報をフォームから登録し、検索結果に即座に反映（ブラウザセッション内のみ）。
+    *   インラインでのエラーハンドリングを実装し、ユーザーフレンドリーな入力体験を提供。
+*   **簡易認証:**
+    *   ユーザーのログイン/ログアウト機能（ブラウザの`localStorage`による簡易的な状態管理）。
+*   **UI/UX:**
+    *   ヘッダーの重複解消。
+    *   美容師カード、詳細ページのデザイン改善。
+    *   実際の画像表示（ダミー画像を含む）。
+    *   アプリケーション全体に共通のフッターを追加。
+    *   主要ページがスマートフォンで適切に表示・操作可能なレスポンシブデザイン。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 技術スタック
 
-## Learn More
+*   **Next.js:** Reactフレームワーク
+*   **React:** UIライブラリ
+*   **TypeScript:** 型安全なJavaScript
+*   **Tailwind CSS:** ユーティリティファーストのCSSフレームワーク
+*   **Git:** バージョン管理システム
 
-To learn more about Next.js, take a look at the following resources:
+## セットアップ方法
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+開発環境を構築し、アプリを起動するための手順です。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **リポジトリのクローン:**
+    ```bash
+    git clone [リポジトリのURL]
+    cd matching-app
+    ```
+2.  **依存関係のインストール:**
+    ```bash
+    npm install
+    # または yarn install / pnpm install / bun install
+    ```
+3.  **開発サーバーの起動:**
+    ```bash
+    npm run dev
+    # または yarn dev / pnpm dev / bun dev
+    ```
+4.  **ブラウザで開く:**
+    `http://localhost:3000` にアクセスしてください。
 
-## Deploy on Vercel
+## 今後の展望 (MVPの次のフェーズ)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+*   **データの永続化:** データベース（Firebase, Supabaseなど）と連携し、登録データや診断結果を永続的に保存。
+*   **本格的な認証:** よりセキュアなログインシステム（メールアドレス/パスワード、SNS認証など）。
+*   **画像アップロード機能:** 美容師が自身のプロフィール画像や施術例画像を直接アップロードできる機能。
+*   **予約システム:** 美容師の空き状況と連携した予約機能。
+*   **AIマッチングの深化:**
+    *   美容師のスタイル投稿写真からAIがテイストや技術レベルを自動分類。
+    *   顧客フィードバックをマッチングロジックに組み込み、美容師の客観的評価を可視化。
+    *   より高度なパーソナライズされたヘアスタイル提案ロジック。
+*   **UI/UXのさらなる洗練:** アニメーション、より高度なレスポンシブデザイン、ユーザーフィードバックに基づく改善。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
