@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja"> {/* 言語を日本語に設定 */}
-      <body className={inter.className}> {/* Interフォントを適用 */}
+    <html lang="ja" className="min-h-full flex flex-col"> {/* htmlにflexboxを適用 */}
+      <body className={`${inter.className} flex-grow flex flex-col`}> {/* bodyにもflexboxを適用し、flex-growでコンテンツ領域を確保 */}
         <header className="bg-white shadow-md">
           <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
             <Link href="/" legacyBehavior>
