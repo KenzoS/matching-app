@@ -12,6 +12,8 @@ export interface Stylist {
   taste: string;
   specialties: string[];
   salonImages: string[];
+  salonAtmosphere: 'calm_atmosphere' | 'lively_atmosphere' | 'private_atmosphere' | 'casual_atmosphere';
+  communicationStyle: 'pro_suggestion' | 'detailed_consultation' | 'enjoy_chat' | 'quiet_service';
 }
 
 export interface SuggestedHairstyle {
@@ -25,6 +27,7 @@ export interface SuggestedHairstyle {
     fashionStyle?: string[];
     timeCommitment?: string[];
   };
+  score?: number;
 }
 
 export let stylists: Stylist[] = [
@@ -37,9 +40,11 @@ export let stylists: Stylist[] = [
     price: 9500,
     imageUrl: '/images/stylist1.jpg',
     bio: 'ショートカットとボブが得意です。お客様一人ひとりの骨格に合わせたカットを提案します。',
-    taste: 'ナチュラル',
-    specialties: ['似合わせカット', '髪質改善'],
+    taste: 'casual',
+    specialties: ['似合わせカット', '髪質改善', 'トリートメント'],
     salonImages: ['/images/salon1-1.jpg', '/images/salon1-2.jpg'],
+    salonAtmosphere: 'calm_atmosphere',
+    communicationStyle: 'detailed_consultation',
   },
   {
     id: 2,
@@ -50,9 +55,11 @@ export let stylists: Stylist[] = [
     price: 8000,
     imageUrl: '/images/stylist2.jpg',
     bio: 'メンズカットのスペシャリスト。ビジネスからカジュアルまで、再現性の高いスタイルを。',
-    taste: 'カジュアル',
+    taste: 'casual',
     specialties: ['メンズカット', 'パーマ'],
     salonImages: ['/images/salon2-1.jpg', '/images/salon2-2.jpg'],
+    salonAtmosphere: 'lively_atmosphere',
+    communicationStyle: 'enjoy_chat',
   },
   {
     id: 3,
@@ -63,9 +70,11 @@ export let stylists: Stylist[] = [
     price: 12000,
     imageUrl: '/images/stylist3.jpg',
     bio: 'ロングヘアの透明感カラーが得意です。髪質改善トリートメントも人気です。',
-    taste: 'フェミニン',
-    specialties: ['髪質改善', '透明感カラー', 'ブリーチ毛対応'],
+    taste: 'feminine',
+    specialties: ['髪質改善', '透明感カラー', 'ブリーチ毛対応', 'トリートメント'],
     salonImages: ['/images/salon3-1.jpg', '/images/salon3-2.jpg'],
+    salonAtmosphere: 'private_atmosphere',
+    communicationStyle: 'pro_suggestion',
   },
   {
     id: 4,
@@ -76,9 +85,11 @@ export let stylists: Stylist[] = [
     price: 8500,
     imageUrl: '/images/stylist4.jpg',
     bio: 'ナチュラルなミディアムスタイルで、女性らしさを引き出します。',
-    taste: 'ナチュラル',
-    specialties: ['似合わせカット', 'ダメージケア'],
+    taste: 'elegant',
+    specialties: ['似合わせカット', 'ダメージケア', 'パーマ'],
     salonImages: ['/images/salon4-1.jpg', '/images/salon4-2.jpg'],
+    salonAtmosphere: 'calm_atmosphere',
+    communicationStyle: 'quiet_service',
   },
   {
     id: 5,
@@ -89,9 +100,11 @@ export let stylists: Stylist[] = [
     price: 11000,
     imageUrl: '/images/stylist5.jpg',
     bio: 'フェミニンなロングスタイルと、ダメージレスな施術を心がけています。',
-    taste: 'フェミニン',
-    specialties: ['髪質改善', '縮毛矯正'],
+    taste: 'feminine',
+    specialties: ['髪質改善', '縮毛矯正', 'トリートメント'],
     salonImages: ['/images/salon5-1.jpg', '/images/salon5-2.jpg'],
+    salonAtmosphere: 'private_atmosphere',
+    communicationStyle: 'detailed_consultation',
   },
 ];
 
