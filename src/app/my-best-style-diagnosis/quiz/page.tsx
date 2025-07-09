@@ -34,6 +34,27 @@ const questions = [
       { text: '時間をかけてもOK', value: 'long_time' },
     ],
   },
+  { // 新しい質問1: 顔の形
+    id: 4,
+    question: 'あなたの顔の形に最も近いのは？',
+    options: [
+      { text: '卵型', value: 'oval' },
+      { text: '丸顔', value: 'round' },
+      { text: '面長', value: 'long' },
+      { text: 'ベース型・エラ張り', value: 'square' },
+      { text: '逆三角形・ハート型', value: 'heart' },
+    ],
+  },
+  { // 新しい質問2: 髪質
+    id: 5,
+    question: 'あなたの髪質に最も近いのは？',
+    options: [
+      { text: '直毛でペタッとしやすい', value: 'straight_flat' },
+      { text: 'くせ毛で広がりやすい', value: 'wavy_frizz' },
+      { text: '硬くて量が多い', value: 'thick_voluminous' },
+      { text: '細くて柔らかい', value: 'fine_soft' },
+    ],
+  },
 ];
 
 const QuizPage = () => {
