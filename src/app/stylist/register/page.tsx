@@ -16,9 +16,10 @@ const RegisterPage = () => {
   const [area, setArea] = useState('指定なし');
   const [price, setPrice] = useState('');
   const [taste, setTaste] = useState('指定なし');
-  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]); // 新しく追加
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({}); // エラーメッセージを管理するstate
 
-  const allSpecialties = [ // 専門技術の選択肢
+  const allSpecialties = [
     '似合わせカット', '髪質改善', 'メンズカット', 'パーマ', '透明感カラー',
     'ブリーチ毛対応', 'ダメージケア', '縮毛矯正', '白髪染め', '頭皮ケア'
   ];
@@ -34,8 +35,22 @@ const RegisterPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !salon || !email || !password || !bio || style === '指定なし' || area === '指定なし' || !price || taste === '指定なし' || selectedSpecialties.length === 0) {
-      alert('全ての必須項目を入力してください。');
+    const newErrors: { [key: string]: string } = {};
+    if (!name) newErrors.name = '氏名は必須です。';
+    if (!salon) newErrors.salon = 'サロン名は必須です。';
+    if (!email) newErrors.email = 'メールアドレスは必須です。';
+    if (!password) newErrors.password = 'パスワードは必須です。';
+    if (!bio) newErrors.bio = '自己紹介は必須です。';
+    if (style === '指定なし') newErrors.style = '得意なスタイルを選択してください。';
+    if (area === '指定なし') newErrors.area = '活動エリアを選択してください。';
+    if (!price) newErrors.price = '料金目安は必須です。';
+    if (taste === '指定なし') newErrors.taste = '得意なテイストを選択してください。';
+    if (selectedSpecialties.length === 0) newErrors.specialties = '専門技術を1つ以上選択してください。';
+
+    setErrors(newErrors); // エラーをセット
+
+    if (Object.keys(newErrors).length > 0) {
+      // エラーがある場合は処理を中断
       return;
     }
 
@@ -49,12 +64,12 @@ const RegisterPage = () => {
       area,
       price: parseInt(price, 10),
       taste,
-      specialties: selectedSpecialties, // 専門技術を追加
+      specialties: selectedSpecialties,
     };
 
     addStylist(newStylist);
 
-    alert('美容師の登録が完了しました！');
+    alert('美容師の登録が完了しました！'); // 成功時はalertのまま
     router.push('/search');
   };
 
@@ -75,10 +90,11 @@ const RegisterPage = () => {
                 id="name" 
                 name="name" 
                 value={name} 
-                onChange={(e) => setName(e.target.value)} 
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm" 
+                onChange={(e) => { setName(e.target.value); setErrors(prev => ({ ...prev, name: undefined })); }} // 入力時にエラーをクリア
+                className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.name ? 'border-red-500' : ''}`}
                 required 
               />
+              {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
             </div>
 
             {/* サロン名 */}
@@ -89,10 +105,11 @@ const RegisterPage = () => {
                 id="salon-name" 
                 name="salon-name" 
                 value={salon} 
-                onChange={(e) => setSalon(e.target.value)} 
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm" 
+                onChange={(e) => { setSalon(e.target.value); setErrors(prev => ({ ...prev, salon: undefined })); }} 
+                className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.salon ? 'border-red-500' : ''}`}
                 required 
               />
+              {errors.salon && <p className="mt-1 text-sm text-red-500">{errors.salon}</p>}
             </div>
 
             {/* メールアドレス */}
@@ -103,10 +120,11 @@ const RegisterPage = () => {
                 id="email" 
                 name="email" 
                 value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm" 
+                onChange={(e) => { setEmail(e.target.value); setErrors(prev => ({ ...prev, email: undefined })); }} 
+                className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.email ? 'border-red-500' : ''}`}
                 required 
               />
+              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
             </div>
 
             {/* パスワード */}
@@ -117,10 +135,11 @@ const RegisterPage = () => {
                 id="password" 
                 name="password" 
                 value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm" 
+                onChange={(e) => { setPassword(e.target.value); setErrors(prev => ({ ...prev, password: undefined })); }} 
+                className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.password ? 'border-red-500' : ''}`}
                 required 
               />
+              {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
             </div>
 
             {/* 自己紹介 */}
@@ -131,10 +150,11 @@ const RegisterPage = () => {
                 name="bio" 
                 rows={4} 
                 value={bio} 
-                onChange={(e) => setBio(e.target.value)} 
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm" 
+                onChange={(e) => { setBio(e.target.value); setErrors(prev => ({ ...prev, bio: undefined })); }} 
+                className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.bio ? 'border-red-500' : ''}`}
                 required 
               ></textarea>
+              {errors.bio && <p className="mt-1 text-sm text-red-500">{errors.bio}</p>}
             </div>
 
             {/* 得意なスタイル */}
@@ -144,8 +164,8 @@ const RegisterPage = () => {
                 id="style" 
                 name="style" 
                 value={style} 
-                onChange={(e) => setStyle(e.target.value)} 
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md"
+                onChange={(e) => { setStyle(e.target.value); setErrors(prev => ({ ...prev, style: undefined })); }} 
+                className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.style ? 'border-red-500' : ''}`}
                 required
               >
                 <option value="指定なし">選択してください</option>
@@ -154,6 +174,7 @@ const RegisterPage = () => {
                 <option value="ロング">ロング</option>
                 <option value="メンズ">メンズ</option>
               </select>
+              {errors.style && <p className="mt-1 text-sm text-red-500">{errors.style}</p>}
             </div>
 
             {/* エリア */}
@@ -163,8 +184,8 @@ const RegisterPage = () => {
                 id="area" 
                 name="area" 
                 value={area} 
-                onChange={(e) => setArea(e.target.value)} 
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md"
+                onChange={(e) => { setArea(e.target.value); setErrors(prev => ({ ...prev, area: undefined })); }} 
+                className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.area ? 'border-red-500' : ''}`}
                 required
               >
                 <option value="指定なし">選択してください</option>
@@ -174,6 +195,7 @@ const RegisterPage = () => {
                 <option value="札幌">札幌</option>
                 <option value="名古屋">名古屋</option>
               </select>
+              {errors.area && <p className="mt-1 text-sm text-red-500">{errors.area}</p>}
             </div>
 
             {/* 料金目安 */}
@@ -184,10 +206,11 @@ const RegisterPage = () => {
                 id="price" 
                 name="price" 
                 value={price} 
-                onChange={(e) => setPrice(e.target.value)} 
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm" 
+                onChange={(e) => { setPrice(e.target.value); setErrors(prev => ({ ...prev, price: undefined })); }} 
+                className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.price ? 'border-red-500' : ''}`}
                 required 
               />
+              {errors.price && <p className="mt-1 text-sm text-red-500">{errors.price}</p>}
             </div>
 
             {/* 得意なテイスト */}
@@ -197,8 +220,8 @@ const RegisterPage = () => {
                 id="taste" 
                 name="taste" 
                 value={taste} 
-                onChange={(e) => setTaste(e.target.value)} 
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md"
+                onChange={(e) => { setTaste(e.target.value); setErrors(prev => ({ ...prev, taste: undefined })); }} 
+                className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.taste ? 'border-red-500' : ''}`}
                 required
               >
                 <option value="指定なし">選択してください</option>
@@ -208,9 +231,10 @@ const RegisterPage = () => {
                 <option value="カジュアル">カジュアル</option>
                 <option value="モード">モード</option>
               </select>
+              {errors.taste && <p className="mt-1 text-sm text-red-500">{errors.taste}</p>}
             </div>
 
-            {/* 専門技術・悩み解決のチェックボックスを追加 */}
+            {/* 専門技術・悩み解決のチェックボックス */}
             <div className="mt-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">専門技術・悩み解決</label>
               <div className="flex flex-wrap gap-2">
@@ -221,7 +245,7 @@ const RegisterPage = () => {
                       type="checkbox"
                       value={specialty}
                       checked={selectedSpecialties.includes(specialty)}
-                      onChange={() => handleSpecialtyChange(specialty)}
+                      onChange={(e) => { handleSpecialtyChange(specialty); setErrors(prev => ({ ...prev, specialties: undefined })); }} // 入力時にエラーをクリア
                       className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
                     />
                     <label htmlFor={`reg-specialty-${specialty}`} className="ml-2 text-sm text-gray-900">
@@ -230,6 +254,7 @@ const RegisterPage = () => {
                   </div>
                 ))}
               </div>
+              {errors.specialties && <p className="mt-1 text-sm text-red-500">{errors.specialties}</p>}
             </div>
 
             <div className="text-center">
