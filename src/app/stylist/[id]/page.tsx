@@ -61,9 +61,9 @@ const StylistDetailPage: React.FC<StylistDetailPageProps> = ({ params }) => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {/* ダミー画像を表示 */}
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden shadow-sm">
+              <div key={i} className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-sm"> {/* h-48 を aspect-square に変更 */}
                 <Image 
-                  src={`/images/sample-work${i}.jpg`} // ダミー画像パス
+                  src={`/images/sample-work${i}.jpg`}
                   alt={`施術例 ${i}`} 
                   layout="fill" 
                   objectFit="cover" 
