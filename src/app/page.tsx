@@ -14,15 +14,15 @@ export default function Home() {
         </div>
 
         <div className="mt-12 grid gap-8 md:grid-cols-2">
-          {/* User Section */}
+          {/* User Section - 診断ページへのリンクに変更 */}
           <div className="bg-white rounded-lg shadow-lg p-8 flex flex-col items-center text-center">
             <h3 className="text-2xl font-bold text-gray-800">お客様はこちら</h3>
             <p className="mt-4 text-gray-600">
-              理想のヘアスタイルを叶える美容師を探しましょう。
+              AIと専門家が導く、あなた史上最高のヘアスタイル診断を体験。
             </p>
-            <Link href="/search" legacyBehavior>
+            <Link href="/my-best-style-diagnosis" legacyBehavior>
               <a className="mt-6 inline-block bg-pink-500 text-white font-bold rounded-full px-8 py-3 hover:bg-pink-600 transition-colors">
-                美容師を探す
+                診断を始める
               </a>
             </Link>
           </div>
