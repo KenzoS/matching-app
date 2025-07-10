@@ -24,7 +24,7 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
   const matchedHairstyles: SuggestedHairstyle[] = [];
   suggestedHairstyles.forEach(style => {
     let score = 0;
-    let explanationParts: string[] = [];
+    const explanationParts: string[] = [];
 
     if (style.suitableFor.fashionStyle?.includes(userProfile.fashionStyle)) {
       score += 2;
@@ -59,14 +59,14 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
     }
   });
 
-  matchedHairstyles.sort((a, b) => (b as any).score - (a as any).score);
+  matchedHairstyles.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
   const top3Hairstyles = matchedHairstyles.slice(0, 3);
 
   // 2. 美容師のマッチ度スコアリングと理由生成ロジック
   // ユーザーの現在地（仮）- 東京駅
   const userLocation = { latitude: 35.681236, longitude: 139.767125 };
 
-  const recommendedStylists = stylists.map(stylist => {
+  const recommendedStylists: Stylist[] = stylists.map(stylist => {
     let matchScore = 0;
     const matchReasons: string[] = [];
 

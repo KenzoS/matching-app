@@ -32,8 +32,8 @@ const RegisterPage = () => {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (_e: React.FormEvent) => {
+    _e.preventDefault();
 
     const newErrors: { [key: string]: string } = {};
     if (!name) newErrors.name = '氏名は必須です。';

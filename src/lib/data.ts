@@ -36,7 +36,7 @@ export interface SuggestedHairstyle {
   score?: number;
 }
 
-export let stylists: Stylist[] = [
+export const stylists: Stylist[] = [
   {
     id: 1,
     name: '佐藤 由美',
