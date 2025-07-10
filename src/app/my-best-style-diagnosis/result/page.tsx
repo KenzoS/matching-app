@@ -112,7 +112,7 @@ const getDiagnosisResult = (answers: { [key: number]: string }) => {
     
     // 提案されたヘアスタイルが作れるか (重要度: 低)
     const canCreateStyle = top3Hairstyles.some(style => {
-        const styleCategory = style.name.includes('ショート') ? 'ショート' : style.name.includes('ミディアム') ? 'ミディアム' : style.name.includes('ロング') ? 'ロング' : 'メンズ';
+        const styleCategory = style.name.includes('ショート') ? 'ショート' : style.name.includes('ミディアム') ? 'ミディアム' : style.name.includes('ロング') ? 'ロング' : ''; // メンズスタイルを考慮しない
         return stylist.style.includes(styleCategory);
     });
     if (canCreateStyle) {
@@ -366,8 +366,16 @@ const ResultPage = () => {
       <LineCtaSection />
 
       <div className="text-center mt-12">
+        <a
+          href="https://forms.gle/YOUR_SURVEY_FORM_ID" // ここに実際のGoogleフォームのURLを貼り付けてください
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-blue-500 text-white font-bold rounded-full px-10 py-4 text-xl hover:bg-blue-600 transition-colors shadow-lg transform hover:scale-105 mb-6"
+        >
+          アンケートに答えてフィードバックを送る
+        </a>
         <Link href="/my-best-style-diagnosis" legacyBehavior>
-          <a className="text-gray-600 hover:underline">
+          <a className="text-gray-600 hover:underline block">
             もう一度診断する
           </a>
         </Link>
