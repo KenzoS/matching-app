@@ -20,6 +20,9 @@ export interface Stylist {
   thirdPartyEvaluationScore?: number; // 第三者評価スコア
   thirdPartyEvaluationComments?: string[]; // 第三者評価コメント
   gender: 'male' | 'female';
+  distance?: number | null; // 距離プロパティを追加
+  matchScore?: number; // マッチスコアプロパティを追加
+  matchReasons?: string[]; // マッチ理由プロパティを追加
 }
 
 export interface SuggestedHairstyle {

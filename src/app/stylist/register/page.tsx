@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { addStylist } from '@/lib/data';
+import { addStylist, Stylist } from '@/lib/data';
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -32,7 +32,7 @@ const RegisterPage = () => {
     );
   };
 
-  const handleSubmit = (_e: React.FormEvent) => {
+  const handleSubmit = (_e: React.FormEvent) => { // eslint-disable-line @typescript-eslint/no-unused-vars
     _e.preventDefault();
 
     const newErrors: { [key: string]: string } = {};
@@ -65,9 +65,18 @@ const RegisterPage = () => {
       price: parseInt(price, 10),
       taste,
       specialties: selectedSpecialties,
+      // 以下のプロパティは登録フォームにないため、仮のデフォルト値を設定
+      salonAtmosphere: 'casual_atmosphere', // 仮の値
+      communicationStyle: 'detailed_consultation', // 仮の値
+      address: '', // 仮の値
+      latitude: 0, // 仮の値
+      longitude: 0, // 仮の値
+      thirdPartyEvaluationScore: undefined, // 仮の値
+      thirdPartyEvaluationComments: undefined, // 仮の値
+      gender: 'female', // 仮の値
     };
 
-    addStylist(newStylist);
+    addStylist(newStylist as Omit<Stylist, 'id' | 'imageUrl' | 'salonImages'>);
 
     alert('美容師の登録が完了しました！'); // 成功時はalertのまま
     router.push('/search');
@@ -90,7 +99,7 @@ const RegisterPage = () => {
                 id="name" 
                 name="name" 
                 value={name} 
-                onChange={(e) => { setName(e.target.value); setErrors(prev => ({ ...prev, name: undefined })); }} // 入力時にエラーをクリア
+                onChange={(e) => { setName(e.target.value); setErrors(prev => { const { name: _name, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars
                 className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.name ? 'border-red-500' : ''}`}
                 required 
               />
@@ -105,7 +114,7 @@ const RegisterPage = () => {
                 id="salon-name" 
                 name="salon-name" 
                 value={salon} 
-                onChange={(e) => { setSalon(e.target.value); setErrors(prev => ({ ...prev, salon: undefined })); }} 
+                onChange={(e) => { setSalon(e.target.value); setErrors(prev => { const { salon: _salon, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars 
                 className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.salon ? 'border-red-500' : ''}`}
                 required 
               />
@@ -120,7 +129,7 @@ const RegisterPage = () => {
                 id="email" 
                 name="email" 
                 value={email} 
-                onChange={(e) => { setEmail(e.target.value); setErrors(prev => ({ ...prev, email: undefined })); }} 
+                onChange={(e) => { setEmail(e.target.value); setErrors(prev => { const { email: _email, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars 
                 className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.email ? 'border-red-500' : ''}`}
                 required 
               />
@@ -135,7 +144,7 @@ const RegisterPage = () => {
                 id="password" 
                 name="password" 
                 value={password} 
-                onChange={(e) => { setPassword(e.target.value); setErrors(prev => ({ ...prev, password: undefined })); }} 
+                onChange={(e) => { setPassword(e.target.value); setErrors(prev => { const { password: _password, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars 
                 className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.password ? 'border-red-500' : ''}`}
                 required 
               />
@@ -150,7 +159,7 @@ const RegisterPage = () => {
                 name="bio" 
                 rows={4} 
                 value={bio} 
-                onChange={(e) => { setBio(e.target.value); setErrors(prev => ({ ...prev, bio: undefined })); }} 
+                onChange={(e) => { setBio(e.target.value); setErrors(prev => { const { bio: _bio, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars 
                 className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.bio ? 'border-red-500' : ''}`}
                 required 
               ></textarea>
@@ -164,7 +173,7 @@ const RegisterPage = () => {
                 id="style" 
                 name="style" 
                 value={style} 
-                onChange={(e) => { setStyle(e.target.value); setErrors(prev => ({ ...prev, style: undefined })); }} 
+                onChange={(e) => { setStyle(e.target.value); setErrors(prev => { const { style: _style, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars 
                 className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.style ? 'border-red-500' : ''}`}
                 required
               >
@@ -184,7 +193,7 @@ const RegisterPage = () => {
                 id="area" 
                 name="area" 
                 value={area} 
-                onChange={(e) => { setArea(e.target.value); setErrors(prev => ({ ...prev, area: undefined })); }} 
+                onChange={(e) => { setArea(e.target.value); setErrors(prev => { const { area: _area, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars 
                 className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.area ? 'border-red-500' : ''}`}
                 required
               >
@@ -206,7 +215,7 @@ const RegisterPage = () => {
                 id="price" 
                 name="price" 
                 value={price} 
-                onChange={(e) => { setPrice(e.target.value); setErrors(prev => ({ ...prev, price: undefined })); }} 
+                                onChange={(e) => { setPrice(e.target.value); setErrors(prev => { const { price: _price, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars 
                 className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.price ? 'border-red-500' : ''}`}
                 required 
               />
@@ -220,7 +229,7 @@ const RegisterPage = () => {
                 id="taste" 
                 name="taste" 
                 value={taste} 
-                onChange={(e) => { setTaste(e.target.value); setErrors(prev => ({ ...prev, taste: undefined })); }} 
+                                onChange={(e) => { setTaste(e.target.value); setErrors(prev => { const { taste: _taste, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars 
                 className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm ${errors.taste ? 'border-red-500' : ''}`}
                 required
               >
@@ -245,7 +254,7 @@ const RegisterPage = () => {
                       type="checkbox"
                       value={specialty}
                       checked={selectedSpecialties.includes(specialty)}
-                      onChange={(e) => { handleSpecialtyChange(specialty); setErrors(prev => ({ ...prev, specialties: undefined })); }} // 入力時にエラーをクリア
+                                            onChange={(e) => { handleSpecialtyChange(specialty); setErrors(prev => { const { specialties: _specialties, ...rest } = prev; return rest; }); }} // eslint-disable-line @typescript-eslint/no-unused-vars
                       className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
                     />
                     <label htmlFor={`reg-specialty-${specialty}`} className="ml-2 text-sm text-gray-900">

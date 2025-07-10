@@ -1,14 +1,13 @@
+"use client";
+
 import React from 'react';
 import { stylists } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 
-interface StylistDetailPageProps {
-  params: { id: string };
-}
-
-const StylistDetailPage: React.FC<StylistDetailPageProps> = ({ params }) => {
-  const stylistId = parseInt(params.id, 10);
+const StylistDetailPage = () => {
+  const params = useParams();
+  const stylistId = parseInt(params.id as string, 10);
   const stylist = stylists.find(s => s.id === stylistId);
 
   if (!stylist) {
