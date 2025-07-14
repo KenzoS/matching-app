@@ -312,17 +312,7 @@ export const suggestedHairstyles: SuggestedHairstyle[] = [
       timeCommitment: ['medium_time'],
     },
   },
-  {
-    id: 'mens_perm',
-    name: 'メンズパーマスタイル',
-    imageUrl: '/images/suggested-style-mens-perm.jpg',
-    description: '無造作な動きと立体感で、こなれた印象を与えるメンズパーマスタイルです。',
-    suitableFor: {
-      fashionStyle: ['casual', 'mode'],
-      hairQuality: ['straight_flat', 'fine_soft'],
-      timeCommitment: ['short_time', 'medium_time'],
-    },
-  },
+  
   {
     id: 'airy_short',
     name: 'エアリーショート',
@@ -441,6 +431,18 @@ export const suggestedHairstyles: SuggestedHairstyle[] = [
       faceShape: ['oval', 'heart'],
       hairQuality: ['straight_flat', 'wavy_frizz'],
       timeCommitment: ['long_time'],
+    },
+  },
+  {
+    id: 'korean_straight_dark',
+    name: '韓国風 切りっぱなしストレート',
+    imageUrl: '/images/suggested-style-korean-straight.jpg',
+    description: 'トレンドの韓国風スタイル。シャープなラインで、クールで洗練された印象を与えます。',
+    suitableFor: {
+      fashionStyle: ['mode', 'elegant', 'casual'],
+      faceShape: ['oval', 'long', 'square'],
+      hairQuality: ['straight_flat', 'thick_voluminous'],
+      timeCommitment: ['short_time', 'medium_time'],
     },
   },
 ];

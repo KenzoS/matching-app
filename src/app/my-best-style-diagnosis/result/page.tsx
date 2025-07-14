@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -203,8 +203,7 @@ const LineCtaSection = () => {
   )
 }
 
-
-const ResultPage = () => {
+const ResultContent = () => {
   const searchParams = useSearchParams();
   const [diagnosisResult, setDiagnosisResult] = useState<ReturnType<typeof getDiagnosisResult> | null>(null);
 
@@ -213,7 +212,6 @@ const ResultPage = () => {
     if (answersParam) {
       try {
         const answers = JSON.parse(answersParam);
-        // data.tsから最新のstylistsデータを渡す
         setDiagnosisResult(getDiagnosisResult(answers));
       } catch (error) {
         console.error('Failed to parse answers', error);
@@ -248,8 +246,8 @@ const ResultPage = () => {
             <Image 
               src={topRecommendation.imageUrl} 
               alt={topRecommendation.name} 
-              layout="fill" 
-              objectFit="cover" 
+              fill 
+              style={{objectFit: 'cover'}}
             />
           </div>
           <div className="w-full md:w-1/2 text-center md:text-left">
@@ -274,8 +272,8 @@ const ResultPage = () => {
                   <Image 
                     src={style.imageUrl} 
                     alt={style.name} 
-                    layout="fill" 
-                    objectFit="cover" 
+                    fill 
+                    style={{objectFit: 'cover'}}
                   />
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">{style.name}</h3>
@@ -308,8 +306,8 @@ const ResultPage = () => {
                   <h3 className="text-2xl font-bold text-gray-800">{stylist.name}</h3>
                   <p className="text-md text-gray-500 mb-3">
                     {stylist.salon} / {stylist.area}
-                    {stylist.distance !== null && (
-                      <span className="ml-2 font-bold text-pink-600">現在地から約{stylist.distance}km</span>
+                    {stylist.distance != null && (
+                      <span className="ml-2 font-bold text-pink-600">現在地から約{stylist.distance.toFixed(1)}km</span>
                     )}
                   </p>
                   <p className="text-gray-700 mb-4 flex-grow line-clamp-3">{stylist.bio}</p>
@@ -381,6 +379,18 @@ const ResultPage = () => {
         </Link>
       </div>
     </div>
+  );
+}
+
+const ResultPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-6 py-12 text-center">
+        <p className="text-xl text-gray-700">診断結果を読み込み中です...</p>
+      </div>
+    }>
+      <ResultContent />
+    </Suspense>
   );
 };
 

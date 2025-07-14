@@ -12,7 +12,8 @@
     "geolib": "^3.3.4",
     "next": "15.3.5",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "vercel": "^44.4.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
